@@ -6,8 +6,7 @@ import {hideBin} from 'yargs/helpers'
 
 import {createTablesJSON} from "./TableJSON";
 import {formatISVFiles} from "./ISV";
-import QueryBuilderPostgREST from "./QueryBuilders/QueryBuilderPostgREST";
-
+import {mapping} from "./QueryBuilders/Mapping";
 
 yargs(hideBin(process.argv))
     .usage('Usage: $0 <command> [options]')
@@ -45,22 +44,30 @@ yargs(hideBin(process.argv))
             console.log(e.message);
         }
     })
-    .command('generate-createtables', 'Generate a SQL file to create and fill all the Inducks tables with foreign keys', (yargs) => {
+    .command('generate', 'Generate a SQL file to create and fill all the Inducks tables with foreign keys', (yargs) => {
         return yargs
             .demandOption('input', '--input The tables JSON file containing all info about the tables. Needs to be in the format of the file generated using --parse')
             .demandOption('isvdir', '--isvdir The directory containing all the formatted ISV files (the CSV files from --format). Doesn\'t need to exist, so can be used in Docker')
-            .demandOption('output', '--output The filename of the generated SQL file.');
+            .demandOption('output', '--output The filename of the generated SQL file.')
+            .demandOption('script', '--script The type of SQL script you want to generate.');
     }, (argv) => {
         const input = String(argv.input);
         const isvDir = String(argv.isvdir);
         const output = String(argv.output);
+        const script = String(argv.script);
         try {
             const resolvedTablesJSONFile = path.resolve(input);
             if (!fs.existsSync(resolvedTablesJSONFile)) {
                 throw Error(`Path doesn't exist: ${resolvedTablesJSONFile}`);
             }
 
-            const queryBuilder = new QueryBuilderPostgREST(resolvedTablesJSONFile, isvDir);
+            const queryBuilderObject = mapping[script];
+
+            if (!queryBuilderObject) {
+                throw Error(`Script must be one of the following: '${Object.keys(mapping).join(', ')}', not: ${script}`);
+            }
+
+            const queryBuilder = new queryBuilderObject.psql(resolvedTablesJSONFile, isvDir);
             queryBuilder.save(output);
             console.log('Created ', output);
         } catch (e) {
@@ -80,6 +87,11 @@ yargs(hideBin(process.argv))
         describe: 'The path or filename for the generated file',
         type: 'string',
         alias: 'o'
+    })
+    .option('script', {
+        describe: 'The type of SQL script you want to generate',
+        type: 'string',
+        alias: 's'
     })
     // A todo for later
     // .option('sql-lang', {

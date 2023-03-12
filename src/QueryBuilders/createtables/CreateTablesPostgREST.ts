@@ -1,8 +1,8 @@
-import QueryBuilderPostgres from "./QueryBuilderPostgres";
-import TableData from "../model/TableData";
-import Step from "../model/Step";
+import CreateTablesPostgres from "./CreateTablesPostgres";
+import TableData from "../../model/TableData";
+import Step from "../../model/Step";
 
-export default class QueryBuilderPostgREST extends QueryBuilderPostgres {
+export default class CreateTablesPostgREST extends CreateTablesPostgres {
     public getAnomRoleName(): string {
         return 'web_anon';
     }

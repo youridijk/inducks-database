@@ -1,9 +1,9 @@
-import TableData from "../model/TableData";
-import ForeignKey from "../model/ForeignKey";
-import QueryBuilder from "./QueryBuilder";
-import Step from "../model/Step";
+import TableData from "../../model/TableData";
+import ForeignKey from "../../model/ForeignKey";
+import QueryBuilder from "../QueryBuilder";
+import Step from "../../model/Step";
 
-export default class QueryBuilderPostgres extends QueryBuilder {
+export default class CreateTablesPostgres extends QueryBuilder {
     public CSVPathSettingName = 'csv.base_path';
 
     public getCreateStatement(tableData: TableData): string {
@@ -21,11 +21,22 @@ export default class QueryBuilderPostgres extends QueryBuilder {
             ');\n'
     }
 
+    public getCSVTableDropStatements(tableData: TableData): string {
+        return `DROP TABLE IF EXISTS ${this.getSchemaName()}.${tableData.tableName}_csv CASCADE;`;
+    }
+
+    public getOldTableDropStatements(tableData: TableData): string {
+        return `DROP TABLE IF EXISTS ${this.getSchemaName()}.${tableData.tableName}_old CASCADE;`;
+    }
+
+    public getTempTableDropStatements(tableData: TableData): string {
+        return `DROP TABLE IF EXISTS ${this.getSchemaName()}.${tableData.tableName}_temp CASCADE;`;
+    }
+
     public getDropStatement(tableData: TableData): string {
-        const {tableName} = tableData;
-        return `DROP TABLE IF EXISTS ${this.getSchemaName()}.${tableName}_old CASCADE;` + '\n' +
-            `DROP TABLE IF EXISTS ${this.getSchemaName()}.${tableName}_temp CASCADE;` + '\n' +
-            `DROP TABLE IF EXISTS ${this.getSchemaName()}.${tableName}_csv CASCADE;`
+        return this.getOldTableDropStatements(tableData) + '\n' +
+            this.getCSVTableDropStatements(tableData) + '\n' +
+            this.getTempTableDropStatements(tableData);
     }
 
     public getCSVPath(tableData: TableData): string {
@@ -33,12 +44,12 @@ export default class QueryBuilderPostgres extends QueryBuilder {
         return `${this.CSVDirPath}/${tableData.fileName.replace('.isv', '.csv')}`
     }
 
-    public getCreateCSVTempTableStatement(tableData: TableData): string {
+    public getCreateCSVTempTableStatement(tableData: TableData, fromTempTable: boolean = true): string {
         const {tableName} = tableData;
         return `CREATE TABLE ${this.getSchemaName()}.${tableName}_csv  ` +
             'AS\n' +
             'SELECT * \n' +
-            `FROM ${this.getSchemaName()}.${tableName}_temp\n` +
+            `FROM ${this.getSchemaName()}.${tableName}${fromTempTable ? '_temp' : ''}\n` +
             'WITH NO DATA;\n';
     }
 
@@ -47,13 +58,13 @@ export default class QueryBuilderPostgres extends QueryBuilder {
         return `COPY ${this.getSchemaName()}.${tableData.tableName}_csv FROM '${fullISVPath}' WITH (FORMAT CSV, NULL '', HEADER );`
     }
 
-    public getInsertCSVIntoTempTableStatement(tableData: TableData): string {
+    public getInsertCSVIntoTempTableStatement(tableData: TableData, fromTempTable: boolean = true): string {
         const {tableName} = tableData;
         const csvTableName = tableName + '_csv';
         const joinedPKs = tableData.primaryKeys.join(', ');
         const csvWhereClausePKs = tableData.primaryKeys.map(pk => `${pk} IS NOT NULL`).join(' AND ');
 
-        return `INSERT INTO ${this.getSchemaName()}.${tableName}_temp` + '\n' +
+        return `INSERT INTO ${this.getSchemaName()}.${tableName}${fromTempTable ? '_temp' : ''}` + '\n' +
             `SELECT DISTINCT ON (${joinedPKs}) *\n` +
             `FROM ${this.getSchemaName()}.${csvTableName}\n` +
             `WHERE ${csvWhereClausePKs};\n`;
@@ -138,7 +149,7 @@ export default class QueryBuilderPostgres extends QueryBuilder {
                 `\tFROM ${currentTableName} t1\n` +
                 `\t    LEFT JOIN ${foreignTableName} t2 on t1.${foreignKey.column} = t2.${foreignKey.referenceColumn}\n` +
                 `\tWHERE t2.${foreignKey.referenceColumn} IS NULL` +
-            ');\n';
+                ');\n';
 
             if (tableData.primaryKeys.includes(foreignKey.column)) {
                 // language=SQL format=false
