@@ -43,13 +43,15 @@ data. Settings for each table that's searchable can be found in the `meilisearch
 | What?                                                        | Status |
 |--------------------------------------------------------------|--------|
 | MySQL support                                                | ❌      |
+| Add upsert SQL script generation to the CLI                  | ❌      |
 | Postgres Docker image with all data                          | ❌      |
 | Bash script to get Postgres database running in one step     | ❌      |
 | Bash script to import all data and settings into Meilisearch | ❌      |
 | Add more data to Meilisearch                                 | ❌      |
 
 ## NOTE
-This project is not created by Inducks, but it uses the data from Inducks. 
+
+This project is not created by Inducks, but it uses the data from Inducks.
 Big thanks to Inducks for creating a way to collect all this information.
 
 
