@@ -1,0 +1,27 @@
+{
+  "name": "import-psql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rimraf ./dist && tsc",
+    "start": "node .",
+    "start:dev": "tsc && node  --max-old-space-size=8192 .",
+    "dev": "nodemon --delay 2.5  -e ts -w ./src -x npm run start:dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/firstline": "^2.0.2",
+    "@types/node": "^18.14.1",
+    "@types/yargs": "^17.0.22",
+    "nodemon": "^2.0.20",
+    "rimraf": "^4.1.2",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "firstline": "^2.0.2",
+    "yargs": "^17.7.1"
+  }
+}

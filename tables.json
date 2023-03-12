@@ -1,0 +1,2813 @@
+[
+  {
+    "tableName": "site",
+    "foreignKeys": [],
+    "columns": [
+      {
+        "name": "sitecode",
+        "type": "varchar(16)"
+      },
+      {
+        "name": "urlbase",
+        "type": "varchar(51)"
+      },
+      {
+        "name": "images",
+        "type": "bool"
+      },
+      {
+        "name": "sitename",
+        "type": "varchar(85)"
+      },
+      {
+        "name": "sitelogo",
+        "type": "varchar(107)"
+      },
+      {
+        "name": "properties",
+        "type": "varchar(1)"
+      }
+    ],
+    "primaryKeys": [
+      "sitecode"
+    ],
+    "fileName": "inducks_site.isv"
+  },
+  {
+    "tableName": "language",
+    "foreignKeys": [
+      {
+        "column": "defaultlanguagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode",
+        "ignoreDuringImport": true
+      }
+    ],
+    "columns": [
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "defaultlanguagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "languagename",
+        "type": "varchar(20)"
+      }
+    ],
+    "primaryKeys": [
+      "languagecode"
+    ],
+    "fileName": "inducks_language.isv"
+  },
+  {
+    "tableName": "languagename",
+    "foreignKeys": [
+      {
+        "column": "languagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      },
+      {
+        "column": "desclanguagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "desclanguagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "languagename",
+        "type": "varchar(57)"
+      }
+    ],
+    "primaryKeys": [
+      "desclanguagecode",
+      "languagecode"
+    ],
+    "fileName": "inducks_languagename.isv"
+  },
+  {
+    "tableName": "country",
+    "foreignKeys": [
+      {
+        "column": "defaultlanguage",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "countrycode",
+        "type": "varchar(2)"
+      },
+      {
+        "name": "countryname",
+        "type": "varchar(20)"
+      },
+      {
+        "name": "defaultlanguage",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "defaultmaintenanceteam",
+        "type": "varchar(8)"
+      }
+    ],
+    "primaryKeys": [
+      "countrycode"
+    ],
+    "fileName": "inducks_country.isv"
+  },
+  {
+    "tableName": "countryname",
+    "foreignKeys": [
+      {
+        "column": "languagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      },
+      {
+        "column": "countrycode",
+        "referenceTable": "country",
+        "referenceColumn": "countrycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "countrycode",
+        "type": "varchar(2)"
+      },
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "countryname",
+        "type": "varchar(56)"
+      }
+    ],
+    "primaryKeys": [
+      "countrycode",
+      "languagecode"
+    ],
+    "fileName": "inducks_countryname.isv"
+  },
+  {
+    "tableName": "currency",
+    "foreignKeys": [],
+    "columns": [
+      {
+        "name": "currencycode",
+        "type": "varchar(3)"
+      },
+      {
+        "name": "currencyname",
+        "type": "varchar(18)"
+      }
+    ],
+    "primaryKeys": [
+      "currencycode"
+    ],
+    "fileName": "inducks_currency.isv"
+  },
+  {
+    "tableName": "currencyname",
+    "foreignKeys": [
+      {
+        "column": "languagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      },
+      {
+        "column": "currencycode",
+        "referenceTable": "currency",
+        "referenceColumn": "currencycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "currencycode",
+        "type": "varchar(3)"
+      },
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "shortcurrencyname",
+        "type": "varchar(19)"
+      },
+      {
+        "name": "longcurrencyname",
+        "type": "varchar(20)"
+      }
+    ],
+    "primaryKeys": [
+      "currencycode",
+      "languagecode"
+    ],
+    "fileName": "inducks_currencyname.isv"
+  },
+  {
+    "tableName": "referencereason",
+    "foreignKeys": [],
+    "columns": [
+      {
+        "name": "referencereasonid",
+        "type": "int"
+      },
+      {
+        "name": "referencereasontext",
+        "type": "varchar(129)"
+      }
+    ],
+    "primaryKeys": [
+      "referencereasonid"
+    ],
+    "fileName": "inducks_referencereason.isv"
+  },
+  {
+    "tableName": "referencereasonname",
+    "foreignKeys": [
+      {
+        "column": "languagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      },
+      {
+        "column": "referencereasonid",
+        "referenceTable": "referencereason",
+        "referenceColumn": "referencereasonid"
+      }
+    ],
+    "columns": [
+      {
+        "name": "referencereasonid",
+        "type": "int"
+      },
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "referencereasontranslation",
+        "type": "varchar(28)"
+      }
+    ],
+    "primaryKeys": [
+      "referencereasonid",
+      "languagecode"
+    ],
+    "fileName": "inducks_referencereasonname.isv"
+  },
+  {
+    "tableName": "movie",
+    "foreignKeys": [],
+    "columns": [
+      {
+        "name": "moviecode",
+        "type": "varchar(14)"
+      },
+      {
+        "name": "title",
+        "type": "text"
+      },
+      {
+        "name": "moviecomment",
+        "type": "text"
+      },
+      {
+        "name": "appsummary",
+        "type": "text"
+      },
+      {
+        "name": "moviejobsummary",
+        "type": "text"
+      },
+      {
+        "name": "locked",
+        "type": "bool"
+      },
+      {
+        "name": "inputfilecode",
+        "type": "int"
+      },
+      {
+        "name": "maintenanceteamcode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "appisxapp",
+        "type": "bool"
+      },
+      {
+        "name": "aka",
+        "type": "varchar(81)"
+      },
+      {
+        "name": "creationdate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "moviedescription",
+        "type": "text"
+      },
+      {
+        "name": "distributor",
+        "type": "varchar(50)"
+      },
+      {
+        "name": "genre",
+        "type": "varchar(3)"
+      },
+      {
+        "name": "orderer",
+        "type": "varchar(178)"
+      },
+      {
+        "name": "publicationdate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "source",
+        "type": "varchar(91)"
+      },
+      {
+        "name": "tim",
+        "type": "varchar(6)"
+      }
+    ],
+    "primaryKeys": [
+      "moviecode"
+    ],
+    "fileName": "inducks_movie.isv"
+  },
+  {
+    "tableName": "moviejob",
+    "foreignKeys": [
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      },
+      {
+        "column": "moviecode",
+        "referenceTable": "movie",
+        "referenceColumn": "moviecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "moviecode",
+        "type": "varchar(14)"
+      },
+      {
+        "name": "personcode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "role",
+        "type": "varchar(15)"
+      },
+      {
+        "name": "moviejobcomment",
+        "type": "varchar(82)"
+      },
+      {
+        "name": "indirect",
+        "type": "bool"
+      },
+      {
+        "name": "doubt",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "moviecode",
+      "personcode",
+      "role"
+    ],
+    "fileName": "inducks_moviejob.isv"
+  },
+  {
+    "tableName": "moviecharacter",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      },
+      {
+        "column": "moviecode",
+        "referenceTable": "movie",
+        "referenceColumn": "moviecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "moviecode",
+        "type": "varchar(14)"
+      },
+      {
+        "name": "charactercode",
+        "type": "varchar(36)"
+      },
+      {
+        "name": "istitlecharacter",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "moviecode",
+      "charactercode"
+    ],
+    "fileName": "inducks_moviecharacter.isv"
+  },
+  {
+    "tableName": "moviereference",
+    "foreignKeys": [
+      {
+        "column": "moviecode",
+        "referenceTable": "movie",
+        "referenceColumn": "moviecode"
+      },
+      {
+        "column": "storycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storycode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "moviecode",
+        "type": "varchar(14)"
+      },
+      {
+        "name": "referencereasonid",
+        "type": "int"
+      },
+      {
+        "name": "frommovietostory",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "storycode",
+      "moviecode"
+    ],
+    "fileName": "inducks_moviereference.isv"
+  },
+  {
+    "tableName": "subseries",
+    "foreignKeys": [],
+    "columns": [
+      {
+        "name": "subseriescode",
+        "type": "varchar(144)"
+      },
+      {
+        "name": "subseriesname",
+        "type": "varchar(57)"
+      },
+      {
+        "name": "official",
+        "type": "bool"
+      },
+      {
+        "name": "subseriescomment",
+        "type": "varchar(285)"
+      },
+      {
+        "name": "subseriescategory",
+        "type": "varchar(46)"
+      }
+    ],
+    "primaryKeys": [
+      "subseriescode"
+    ],
+    "fileName": "inducks_subseries.isv"
+  },
+  {
+    "tableName": "subseriesname",
+    "foreignKeys": [
+      {
+        "column": "languagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      },
+      {
+        "column": "subseriescode",
+        "referenceTable": "subseries",
+        "referenceColumn": "subseriescode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "subseriescode",
+        "type": "varchar(144)"
+      },
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "subseriesname",
+        "type": "varchar(294)"
+      },
+      {
+        "name": "preferred",
+        "type": "bool"
+      },
+      {
+        "name": "subseriesnamecomment",
+        "type": "varchar(28)"
+      }
+    ],
+    "primaryKeys": [
+      "subseriescode",
+      "languagecode"
+    ],
+    "fileName": "inducks_subseriesname.isv"
+  },
+  {
+    "tableName": "universe",
+    "foreignKeys": [],
+    "columns": [
+      {
+        "name": "universecode",
+        "type": "varchar(28)"
+      },
+      {
+        "name": "universecomment",
+        "type": "varchar(1)"
+      }
+    ],
+    "primaryKeys": [
+      "universecode"
+    ],
+    "fileName": "inducks_universe.isv"
+  },
+  {
+    "tableName": "team",
+    "foreignKeys": [],
+    "columns": [
+      {
+        "name": "teamcode",
+        "type": "varchar(13)"
+      },
+      {
+        "name": "teamdescriptionname",
+        "type": "varchar(25)"
+      },
+      {
+        "name": "teamshortname",
+        "type": "varchar(7)"
+      }
+    ],
+    "primaryKeys": [
+      "teamcode"
+    ],
+    "fileName": "inducks_team.isv"
+  },
+  {
+    "tableName": "teammember",
+    "foreignKeys": [
+      {
+        "column": "teamcode",
+        "referenceTable": "team",
+        "referenceColumn": "teamcode"
+      },
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "teamcode",
+        "type": "varchar(13)"
+      },
+      {
+        "name": "personcode",
+        "type": "varchar(3)"
+      }
+    ],
+    "primaryKeys": [
+      "teamcode"
+    ],
+    "fileName": "inducks_teammember.isv"
+  },
+  {
+    "tableName": "publisher",
+    "foreignKeys": [],
+    "columns": [
+      {
+        "name": "publisherid",
+        "type": "varchar(94)"
+      },
+      {
+        "name": "publishername",
+        "type": "text"
+      }
+    ],
+    "primaryKeys": [
+      "publisherid"
+    ],
+    "fileName": "inducks_publisher.isv"
+  },
+  {
+    "tableName": "person",
+    "foreignKeys": [
+      {
+        "column": "nationalitycountrycode",
+        "referenceTable": "country",
+        "referenceColumn": "countrycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "nationalitycountrycode",
+        "type": "varchar(2)"
+      },
+      {
+        "name": "fullname",
+        "type": "text"
+      },
+      {
+        "name": "official",
+        "type": "bool"
+      },
+      {
+        "name": "personcomment",
+        "type": "varchar(221)"
+      },
+      {
+        "name": "unknownstudiomember",
+        "type": "bool"
+      },
+      {
+        "name": "isfake",
+        "type": "bool"
+      },
+      {
+        "name": "numberofindexedissues",
+        "type": "int"
+      },
+      {
+        "name": "birthname",
+        "type": "text"
+      },
+      {
+        "name": "borndate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "bornplace",
+        "type": "varchar(30)"
+      },
+      {
+        "name": "deceaseddate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "deceasedplace",
+        "type": "varchar(31)"
+      },
+      {
+        "name": "education",
+        "type": "varchar(189)"
+      },
+      {
+        "name": "moviestext",
+        "type": "varchar(879)"
+      },
+      {
+        "name": "comicstext",
+        "type": "varchar(927)"
+      },
+      {
+        "name": "othertext",
+        "type": "varchar(307)"
+      },
+      {
+        "name": "photofilename",
+        "type": "varchar(32)"
+      },
+      {
+        "name": "photocomment",
+        "type": "varchar(68)"
+      },
+      {
+        "name": "photosource",
+        "type": "varchar(67)"
+      },
+      {
+        "name": "personrefs",
+        "type": "varchar(179)"
+      }
+    ],
+    "primaryKeys": [
+      "personcode"
+    ],
+    "fileName": "inducks_person.isv"
+  },
+  {
+    "tableName": "personalias",
+    "foreignKeys": [
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "surname",
+        "type": "varchar(48)"
+      },
+      {
+        "name": "givenname",
+        "type": "varchar(31)"
+      },
+      {
+        "name": "official",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "surname",
+      "givenname"
+    ],
+    "fileName": "inducks_personalias.isv"
+  },
+  {
+    "tableName": "studio",
+    "foreignKeys": [
+      {
+        "column": "countrycode",
+        "referenceTable": "country",
+        "referenceColumn": "countrycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "studiocode",
+        "type": "varchar(23)"
+      },
+      {
+        "name": "countrycode",
+        "type": "varchar(2)"
+      },
+      {
+        "name": "studioname",
+        "type": "varchar(24)"
+      },
+      {
+        "name": "city",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "description",
+        "type": "varchar(415)"
+      },
+      {
+        "name": "othertext",
+        "type": "varchar(94)"
+      },
+      {
+        "name": "photofilename",
+        "type": "varchar(18)"
+      },
+      {
+        "name": "photocomment",
+        "type": "varchar(40)"
+      },
+      {
+        "name": "photosource",
+        "type": "varchar(42)"
+      },
+      {
+        "name": "studiorefs",
+        "type": "varchar(204)"
+      }
+    ],
+    "primaryKeys": [
+      "studiocode"
+    ],
+    "fileName": "inducks_studio.isv"
+  },
+  {
+    "tableName": "studiowork",
+    "foreignKeys": [
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      },
+      {
+        "column": "studiocode",
+        "referenceTable": "studio",
+        "referenceColumn": "studiocode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "studiocode",
+        "type": "varchar(23)"
+      },
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      }
+    ],
+    "primaryKeys": [
+      "studiocode",
+      "personcode"
+    ],
+    "fileName": "inducks_studiowork.isv"
+  },
+  {
+    "tableName": "character",
+    "foreignKeys": [],
+    "columns": [
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "charactername",
+        "type": "text"
+      },
+      {
+        "name": "official",
+        "type": "bool"
+      },
+      {
+        "name": "onetime",
+        "type": "bool"
+      },
+      {
+        "name": "heroonly",
+        "type": "bool"
+      },
+      {
+        "name": "charactercomment",
+        "type": "varchar(671)"
+      }
+    ],
+    "primaryKeys": [
+      "charactercode"
+    ],
+    "fileName": "inducks_character.isv"
+  },
+  {
+    "tableName": "charactername",
+    "foreignKeys": [
+      {
+        "column": "languagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      },
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "charactername",
+        "type": "varchar(83)"
+      },
+      {
+        "name": "preferred",
+        "type": "bool"
+      },
+      {
+        "name": "characternamecomment",
+        "type": "varchar(99)"
+      }
+    ],
+    "primaryKeys": [
+      "charactercode",
+      "languagecode",
+      "charactername"
+    ],
+    "fileName": "inducks_charactername.isv"
+  },
+  {
+    "tableName": "characteralias",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "charactername",
+        "type": "varchar(58)"
+      }
+    ],
+    "primaryKeys": [
+      "charactername"
+    ],
+    "fileName": "inducks_characteralias.isv"
+  },
+  {
+    "tableName": "characterreference",
+    "foreignKeys": [
+      {
+        "column": "tocharactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      },
+      {
+        "column": "fromcharactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "fromcharactercode",
+        "type": "varchar(25)"
+      },
+      {
+        "name": "tocharactercode",
+        "type": "varchar(25)"
+      },
+      {
+        "name": "isgroupofcharacters",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "fromcharactercode",
+      "tocharactercode"
+    ],
+    "fileName": "inducks_characterreference.isv"
+  },
+  {
+    "tableName": "characterdetail",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "charactername",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "number",
+        "type": "int"
+      }
+    ],
+    "primaryKeys": [
+      "charactercode"
+    ],
+    "fileName": "inducks_characterdetail.isv"
+  },
+  {
+    "tableName": "ucrelation",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      },
+      {
+        "column": "universecode",
+        "referenceTable": "universe",
+        "referenceColumn": "universecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "universecode",
+        "type": "varchar(28)"
+      },
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      }
+    ],
+    "primaryKeys": [
+      "universecode",
+      "charactercode"
+    ],
+    "fileName": "inducks_ucrelation.isv"
+  },
+  {
+    "tableName": "universename",
+    "foreignKeys": [
+      {
+        "column": "languagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      },
+      {
+        "column": "universecode",
+        "referenceTable": "universe",
+        "referenceColumn": "universecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "universecode",
+        "type": "varchar(28)"
+      },
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "universename",
+        "type": "varchar(76)"
+      }
+    ],
+    "primaryKeys": [
+      "universecode",
+      "languagecode"
+    ],
+    "fileName": "inducks_universename.isv"
+  },
+  {
+    "tableName": "publication",
+    "foreignKeys": [
+      {
+        "column": "countrycode",
+        "referenceTable": "country",
+        "referenceColumn": "countrycode"
+      },
+      {
+        "column": "languagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "publicationcode",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "countrycode",
+        "type": "varchar(2)"
+      },
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "title",
+        "type": "text"
+      },
+      {
+        "name": "size",
+        "type": "varchar(82)"
+      },
+      {
+        "name": "publicationcomment",
+        "type": "varchar(1354)"
+      },
+      {
+        "name": "circulation",
+        "type": "varchar(15)"
+      },
+      {
+        "name": "numbersarefake",
+        "type": "bool"
+      },
+      {
+        "name": "error",
+        "type": "bool"
+      },
+      {
+        "name": "locked",
+        "type": "bool"
+      },
+      {
+        "name": "inxforbidden",
+        "type": "bool"
+      },
+      {
+        "name": "inputfilecode",
+        "type": "int"
+      },
+      {
+        "name": "maintenanceteamcode",
+        "type": "varchar(9)"
+      }
+    ],
+    "primaryKeys": [
+      "publicationcode"
+    ],
+    "fileName": "inducks_publication.isv"
+  },
+  {
+    "tableName": "publicationcategory",
+    "foreignKeys": [
+      {
+        "column": "publicationcode",
+        "referenceTable": "publication",
+        "referenceColumn": "publicationcode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "publicationcode",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "category",
+        "type": "varchar(61)"
+      }
+    ],
+    "primaryKeys": [
+      "publicationcode"
+    ],
+    "fileName": "inducks_publicationcategory.isv"
+  },
+  {
+    "tableName": "publicationname",
+    "foreignKeys": [
+      {
+        "column": "publicationcode",
+        "referenceTable": "publication",
+        "referenceColumn": "publicationcode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "publicationcode",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "publicationname",
+        "type": "varchar(62)"
+      }
+    ],
+    "primaryKeys": [
+      "publicationcode"
+    ],
+    "fileName": "inducks_publicationname.isv"
+  },
+  {
+    "tableName": "issuerange",
+    "foreignKeys": [
+      {
+        "column": "publicationcode",
+        "referenceTable": "publication",
+        "referenceColumn": "publicationcode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "issuerangecode",
+        "type": "varchar(15)"
+      },
+      {
+        "name": "publicationcode",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "title",
+        "type": "varchar(228)"
+      },
+      {
+        "name": "circulation",
+        "type": "varchar(6)"
+      },
+      {
+        "name": "issuerangecomment",
+        "type": "varchar(468)"
+      },
+      {
+        "name": "numbersarefake",
+        "type": "bool"
+      },
+      {
+        "name": "error",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "issuerangecode"
+    ],
+    "fileName": "inducks_issuerange.isv"
+  },
+  {
+    "tableName": "issue",
+    "foreignKeys": [
+      {
+        "column": "issuerangecode",
+        "referenceTable": "issuerange",
+        "referenceColumn": "issuerangecode"
+      },
+      {
+        "column": "publicationcode",
+        "referenceTable": "publication",
+        "referenceColumn": "publicationcode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "issuecode",
+        "type": "varchar(17)"
+      },
+      {
+        "name": "issuerangecode",
+        "type": "varchar(15)"
+      },
+      {
+        "name": "publicationcode",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "issuenumber",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "title",
+        "type": "varchar(158)"
+      },
+      {
+        "name": "size",
+        "type": "varchar(82)"
+      },
+      {
+        "name": "pages",
+        "type": "varchar(93)"
+      },
+      {
+        "name": "price",
+        "type": "varchar(160)"
+      },
+      {
+        "name": "printrun",
+        "type": "varchar(142)"
+      },
+      {
+        "name": "attached",
+        "type": "varchar(288)"
+      },
+      {
+        "name": "oldestdate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "fullyindexed",
+        "type": "bool"
+      },
+      {
+        "name": "issuecomment",
+        "type": "varchar(1516)"
+      },
+      {
+        "name": "error",
+        "type": "bool"
+      },
+      {
+        "name": "filledoldestdate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "locked",
+        "type": "bool"
+      },
+      {
+        "name": "inxforbidden",
+        "type": "bool"
+      },
+      {
+        "name": "inputfilecode",
+        "type": "int"
+      },
+      {
+        "name": "maintenanceteamcode",
+        "type": "varchar(8)"
+      }
+    ],
+    "primaryKeys": [
+      "issuecode"
+    ],
+    "fileName": "inducks_issue.isv"
+  },
+  {
+    "tableName": "issuejob",
+    "foreignKeys": [
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      },
+      {
+        "column": "issuecode",
+        "referenceTable": "issue",
+        "referenceColumn": "issuecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "issuecode",
+        "type": "varchar(17)"
+      },
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "inxtransletcol",
+        "type": "varchar(11)"
+      },
+      {
+        "name": "issuejobcomment",
+        "type": "varchar(32)"
+      },
+      {
+        "name": "doubt",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "issuecode",
+      "personcode",
+      "inxtransletcol"
+    ],
+    "fileName": "inducks_issuejob.isv"
+  },
+  {
+    "tableName": "issuedate",
+    "foreignKeys": [
+      {
+        "column": "issuecode",
+        "referenceTable": "issue",
+        "referenceColumn": "issuecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "issuecode",
+        "type": "varchar(17)"
+      },
+      {
+        "name": "date",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "kindofdate",
+        "type": "varchar(76)"
+      },
+      {
+        "name": "doubt",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "issuecode",
+      "date"
+    ],
+    "fileName": "inducks_issuedate.isv"
+  },
+  {
+    "tableName": "issuecollecting",
+    "foreignKeys": [
+      {
+        "column": "collectingissuecode",
+        "referenceTable": "issue",
+        "referenceColumn": "issuecode"
+      },
+      {
+        "column": "collectedissuecode",
+        "referenceTable": "issue",
+        "referenceColumn": "issuecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "collectingissuecode",
+        "type": "varchar(17)"
+      },
+      {
+        "name": "collectedissuecode",
+        "type": "varchar(15)"
+      }
+    ],
+    "primaryKeys": [
+      "collectingissuecode",
+      "collectedissuecode"
+    ],
+    "fileName": "inducks_issuecollecting.isv"
+  },
+  {
+    "tableName": "issueprice",
+    "foreignKeys": [
+      {
+        "column": "issuecode",
+        "referenceTable": "issue",
+        "referenceColumn": "issuecode"
+      },
+      {
+        "column": "currency",
+        "referenceTable": "currency",
+        "referenceColumn": "currencycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "issuecode",
+        "type": "varchar(17)"
+      },
+      {
+        "name": "amount",
+        "type": "varchar(86)"
+      },
+      {
+        "name": "currency",
+        "type": "varchar(14)"
+      },
+      {
+        "name": "comment",
+        "type": "varchar(75)"
+      },
+      {
+        "name": "sequencenumber",
+        "type": "int"
+      }
+    ],
+    "primaryKeys": [
+      "issuecode",
+      "amount"
+    ],
+    "fileName": "inducks_issueprice.isv"
+  },
+  {
+    "tableName": "equiv",
+    "foreignKeys": [
+      {
+        "column": "issuecode",
+        "referenceTable": "issue",
+        "referenceColumn": "issuecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "issuecode",
+        "type": "varchar(17)"
+      },
+      {
+        "name": "equivid",
+        "type": "int"
+      },
+      {
+        "name": "equivcomment",
+        "type": "varchar(3)"
+      }
+    ],
+    "primaryKeys": [
+      "issuecode",
+      "equivid"
+    ],
+    "fileName": "inducks_equiv.isv"
+  },
+  {
+    "tableName": "publishingjob",
+    "foreignKeys": [
+      {
+        "column": "issuecode",
+        "referenceTable": "issue",
+        "referenceColumn": "issuecode"
+      },
+      {
+        "column": "publisherid",
+        "referenceTable": "publisher",
+        "referenceColumn": "publisherid"
+      }
+    ],
+    "columns": [
+      {
+        "name": "publisherid",
+        "type": "varchar(94)"
+      },
+      {
+        "name": "issuecode",
+        "type": "varchar(17)"
+      },
+      {
+        "name": "publishingjobcomment",
+        "type": "varchar(67)"
+      }
+    ],
+    "primaryKeys": [
+      "publisherid",
+      "issuecode"
+    ],
+    "fileName": "inducks_publishingjob.isv"
+  },
+  {
+    "tableName": "storyheader",
+    "foreignKeys": [
+      {
+        "column": "countrycode",
+        "referenceTable": "country",
+        "referenceColumn": "countrycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storyheadercode",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "level",
+        "type": "varchar(1)"
+      },
+      {
+        "name": "title",
+        "type": "varchar(96)"
+      },
+      {
+        "name": "storyheadercomment",
+        "type": "varchar(544)"
+      },
+      {
+        "name": "countrycode",
+        "type": "varchar(2)"
+      }
+    ],
+    "primaryKeys": [
+      "storyheadercode"
+    ],
+    "fileName": "inducks_storyheader.isv"
+  },
+  {
+    "tableName": "storyversion",
+    "foreignKeys": [
+      {
+        "column": "storycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode",
+        "ignoreDuringImport": true,
+        "skipCreation": true
+      }
+    ],
+    "columns": [
+      {
+        "name": "storyversioncode",
+        "type": "varchar(19)"
+      },
+      {
+        "name": "storycode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "entirepages",
+        "type": "int"
+      },
+      {
+        "name": "brokenpagenumerator",
+        "type": "int"
+      },
+      {
+        "name": "brokenpagedenominator",
+        "type": "int"
+      },
+      {
+        "name": "brokenpageunspecified",
+        "type": "bool"
+      },
+      {
+        "name": "kind",
+        "type": "varchar(18)"
+      },
+      {
+        "name": "rowsperpage",
+        "type": "int"
+      },
+      {
+        "name": "columnsperpage",
+        "type": "int"
+      },
+      {
+        "name": "appisxapp",
+        "type": "bool"
+      },
+      {
+        "name": "what",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "appsummary",
+        "type": "text"
+      },
+      {
+        "name": "plotsummary",
+        "type": "text"
+      },
+      {
+        "name": "writsummary",
+        "type": "text"
+      },
+      {
+        "name": "artsummary",
+        "type": "text"
+      },
+      {
+        "name": "inksummary",
+        "type": "text"
+      },
+      {
+        "name": "creatorrefsummary",
+        "type": "text"
+      },
+      {
+        "name": "keywordsummary",
+        "type": "text"
+      },
+      {
+        "name": "estimatedpanels",
+        "type": "int"
+      }
+    ],
+    "primaryKeys": [
+      "storyversioncode"
+    ],
+    "fileName": "inducks_storyversion.isv"
+  },
+  {
+    "tableName": "story",
+    "foreignKeys": [
+      {
+        "column": "originalstoryversioncode",
+        "referenceTable": "storyversion",
+        "referenceColumn": "storyversioncode",
+        "ignoreDuringImport": true
+      },
+      {
+        "column": "storyheadercode",
+        "referenceTable": "storyheader",
+        "referenceColumn": "storyheadercode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storycode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "originalstoryversioncode",
+        "type": "varchar(19)"
+      },
+      {
+        "name": "creationdate",
+        "type": "varchar(11)"
+      },
+      {
+        "name": "firstpublicationdate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "endpublicationdate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "title",
+        "type": "text"
+      },
+      {
+        "name": "usedifferentcode",
+        "type": "varchar(20)"
+      },
+      {
+        "name": "storycomment",
+        "type": "varchar(664)"
+      },
+      {
+        "name": "error",
+        "type": "bool"
+      },
+      {
+        "name": "repcountrysummary",
+        "type": "text"
+      },
+      {
+        "name": "storyparts",
+        "type": "int"
+      },
+      {
+        "name": "locked",
+        "type": "bool"
+      },
+      {
+        "name": "inputfilecode",
+        "type": "int"
+      },
+      {
+        "name": "issuecodeofstoryitem",
+        "type": "varchar(14)"
+      },
+      {
+        "name": "maintenanceteamcode",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "storyheadercode",
+        "type": "varchar(12)"
+      }
+    ],
+    "primaryKeys": [
+      "storycode"
+    ],
+    "fileName": "inducks_story.isv"
+  },
+  {
+    "tableName": "storyjob",
+    "foreignKeys": [
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      },
+      {
+        "column": "storyversioncode",
+        "referenceTable": "storyversion",
+        "referenceColumn": "storyversioncode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storyversioncode",
+        "type": "varchar(19)"
+      },
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "plotwritartink",
+        "type": "varchar(9)"
+      },
+      {
+        "name": "storyjobcomment",
+        "type": "varchar(141)"
+      },
+      {
+        "name": "indirect",
+        "type": "bool"
+      },
+      {
+        "name": "doubt",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "storyversioncode",
+      "personcode",
+      "plotwritartink"
+    ],
+    "fileName": "inducks_storyjob.isv"
+  },
+  {
+    "tableName": "storydescription",
+    "foreignKeys": [
+      {
+        "column": "languagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      },
+      {
+        "column": "storyversioncode",
+        "referenceTable": "storyversion",
+        "referenceColumn": "storyversioncode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storyversioncode",
+        "type": "varchar(19)"
+      },
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "desctext",
+        "type": "varchar(2814)"
+      }
+    ],
+    "primaryKeys": [
+      "storyversioncode",
+      "languagecode"
+    ],
+    "fileName": "inducks_storydescription.isv"
+  },
+  {
+    "tableName": "storyreference",
+    "foreignKeys": [
+      {
+        "column": "tostorycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      },
+      {
+        "column": "fromstorycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "fromstorycode",
+        "type": "varchar(18)"
+      },
+      {
+        "name": "tostorycode",
+        "type": "varchar(17)"
+      },
+      {
+        "name": "referencereasonid",
+        "type": "int"
+      }
+    ],
+    "primaryKeys": [
+      "fromstorycode",
+      "tostorycode"
+    ],
+    "fileName": "inducks_storyreference.isv"
+  },
+  {
+    "tableName": "storycodes",
+    "foreignKeys": [
+      {
+        "column": "alternativecode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      },
+      {
+        "column": "storycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storycode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "alternativecode",
+        "type": "varchar(72)"
+      },
+      {
+        "name": "unpackedcode",
+        "type": "varchar(82)"
+      },
+      {
+        "name": "codecomment",
+        "type": "varchar(45)"
+      }
+    ],
+    "primaryKeys": [
+      "storycode",
+      "alternativecode"
+    ],
+    "ignore": true,
+    "fileName": "inducks_storycodes.isv"
+  },
+  {
+    "tableName": "herocharacter",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      },
+      {
+        "column": "storycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storycode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "number",
+        "type": "int"
+      },
+      {
+        "name": "doubt",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "storycode",
+      "charactercode"
+    ],
+    "fileName": "inducks_herocharacter.isv"
+  },
+  {
+    "tableName": "appearance",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      },
+      {
+        "column": "storyversioncode",
+        "referenceTable": "storyversion",
+        "referenceColumn": "storyversioncode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storyversioncode",
+        "type": "varchar(19)"
+      },
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "number",
+        "type": "int"
+      },
+      {
+        "name": "appearancecomment",
+        "type": "varchar(209)"
+      },
+      {
+        "name": "doubt",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "storyversioncode",
+      "charactercode"
+    ],
+    "fileName": "inducks_appearance.isv"
+  },
+  {
+    "tableName": "entry",
+    "foreignKeys": [
+      {
+        "column": "issuecode",
+        "referenceTable": "issue",
+        "referenceColumn": "issuecode"
+      },
+      {
+        "column": "storyversioncode",
+        "referenceTable": "storyversion",
+        "referenceColumn": "storyversioncode"
+      },
+      {
+        "column": "languagecode",
+        "referenceTable": "language",
+        "referenceColumn": "languagecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "entrycode",
+        "type": "varchar(22)"
+      },
+      {
+        "name": "issuecode",
+        "type": "varchar(17)"
+      },
+      {
+        "name": "storyversioncode",
+        "type": "varchar(19)"
+      },
+      {
+        "name": "languagecode",
+        "type": "varchar(7)"
+      },
+      {
+        "name": "includedinentrycode",
+        "type": "varchar(22)"
+      },
+      {
+        "name": "position",
+        "type": "varchar(9)"
+      },
+      {
+        "name": "printedcode",
+        "type": "varchar(88)"
+      },
+      {
+        "name": "guessedcode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "title",
+        "type": "varchar(284)"
+      },
+      {
+        "name": "reallytitle",
+        "type": "bool"
+      },
+      {
+        "name": "printedhero",
+        "type": "varchar(96)"
+      },
+      {
+        "name": "changes",
+        "type": "varchar(628)"
+      },
+      {
+        "name": "cut",
+        "type": "varchar(107)"
+      },
+      {
+        "name": "minorchanges",
+        "type": "varchar(558)"
+      },
+      {
+        "name": "missingpanels",
+        "type": "varchar(21)"
+      },
+      {
+        "name": "mirrored",
+        "type": "bool"
+      },
+      {
+        "name": "sideways",
+        "type": "bool"
+      },
+      {
+        "name": "startdate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "enddate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "identificationuncertain",
+        "type": "bool"
+      },
+      {
+        "name": "alsoreprint",
+        "type": "varchar(336)"
+      },
+      {
+        "name": "part",
+        "type": "varchar(5)"
+      },
+      {
+        "name": "entrycomment",
+        "type": "varchar(2009)"
+      },
+      {
+        "name": "error",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "entrycode"
+    ],
+    "fileName": "inducks_entry.isv"
+  },
+  {
+    "tableName": "entryurl",
+    "foreignKeys": [
+      {
+        "column": "entrycode",
+        "referenceTable": "entry",
+        "referenceColumn": "entrycode"
+      },
+      {
+        "column": "sitecode",
+        "referenceTable": "site",
+        "referenceColumn": "sitecode"
+      },
+      {
+        "column": "storycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      }
+    ],
+
+
+    "columns": [
+      {
+        "name": "entrycode",
+        "type": "varchar(22)"
+      },
+      {
+        "name": "sitecode",
+        "type": "varchar(16)"
+      },
+      {
+        "name": "pagenumber",
+        "type": "int"
+      },
+      {
+        "name": "url",
+        "type": "varchar(87)"
+      },
+      {
+        "name": "storycode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "public",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "entrycode", "sitecode", "pagenumber"
+    ],
+    "fileName": "inducks_entryurl.isv"
+  },
+  {
+    "tableName": "entrycharactername",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      },
+      {
+        "column": "entrycode",
+        "referenceTable": "entry",
+        "referenceColumn": "entrycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "entrycode",
+        "type": "varchar(22)"
+      },
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "charactername",
+        "type": "varchar(131)"
+      }
+    ],
+    "primaryKeys": [
+      "entrycode",
+      "charactercode"
+    ],
+    "fileName": "inducks_entrycharactername.isv"
+  },
+  {
+    "tableName": "entryjob",
+    "foreignKeys": [
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      },
+      {
+        "column": "entrycode",
+        "referenceTable": "entry",
+        "referenceColumn": "entrycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "entrycode",
+        "type": "varchar(22)"
+      },
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "transletcol",
+        "type": "varchar(11)"
+      },
+      {
+        "name": "entryjobcomment",
+        "type": "varchar(51)"
+      },
+      {
+        "name": "doubt",
+        "type": "bool"
+      }
+    ],
+    "primaryKeys": [
+      "entrycode",
+      "personcode",
+      "transletcol"
+    ],
+    "fileName": "inducks_entryjob.isv"
+  },
+  {
+    "tableName": "logocharacter",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      },
+      {
+        "column": "entrycode",
+        "referenceTable": "entry",
+        "referenceColumn": "entrycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "entrycode",
+        "type": "varchar(22)"
+      },
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "reallyintitle",
+        "type": "bool"
+      },
+      {
+        "name": "number",
+        "type": "int"
+      },
+      {
+        "name": "logocharactercomment",
+        "type": "varchar(28)"
+      }
+    ],
+    "primaryKeys": [
+      "entrycode",
+      "charactercode"
+    ],
+    "fileName": "inducks_logocharacter.isv"
+  },
+  {
+    "tableName": "substory",
+    "foreignKeys": [
+      {
+        "column": "storycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      },
+      {
+        "column": "superstorycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      },
+      {
+        "column": "originalstoryversioncode",
+        "referenceTable": "storyversion",
+        "referenceColumn": "storyversioncode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storycode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "originalstoryversioncode",
+        "type": "varchar(13)"
+      },
+      {
+        "name": "superstorycode",
+        "type": "varchar(13)"
+      },
+      {
+        "name": "part",
+        "type": "varchar(3)"
+      },
+      {
+        "name": "firstpublicationdate",
+        "type": "varchar(10)"
+      },
+      {
+        "name": "title",
+        "type": "varchar(101)"
+      },
+      {
+        "name": "substorycomment",
+        "type": "varchar(607)"
+      },
+      {
+        "name": "error",
+        "type": "bool"
+      },
+      {
+        "name": "locked",
+        "type": "bool"
+      },
+      {
+        "name": "inputfilecode",
+        "type": "int"
+      },
+      {
+        "name": "maintenanceteamcode",
+        "type": "varchar(8)"
+      }
+    ],
+    "primaryKeys": [
+      "storycode"
+    ],
+    "ignore": true,
+    "fileName": "inducks_substory.isv"
+  },
+  {
+    "tableName": "storysubseries",
+    "foreignKeys": [
+      {
+        "column": "storycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storycode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "subseriescode",
+        "type": "varchar(144)"
+      },
+      {
+        "name": "storysubseriescomment",
+        "type": "varchar(29)"
+      }
+    ],
+    "primaryKeys": [
+      "storycode",
+      "subseriescode"
+    ],
+    "fileName": "inducks_storysubseries.isv"
+  },
+  {
+    "tableName": "issueurl",
+    "foreignKeys": [
+      {
+        "column": "sitecode",
+        "referenceTable": "site",
+        "referenceColumn": "sitecode"
+      },
+      {
+        "column": "issuecode",
+        "referenceTable": "issue",
+        "referenceColumn": "issuecode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "issuecode",
+        "type": "varchar(17)"
+      },
+      {
+        "name": "sitecode",
+        "type": "varchar(16)"
+      },
+      {
+        "name": "url",
+        "type": "varchar(12)"
+      }
+    ],
+    "primaryKeys": [
+      "issuecode",
+      "sitecode"
+    ],
+    "fileName": "inducks_issueurl.isv"
+  },
+  {
+    "tableName": "personurl",
+    "foreignKeys": [
+      {
+        "column": "sitecode",
+        "referenceTable": "site",
+        "referenceColumn": "sitecode"
+      },
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "sitecode",
+        "type": "varchar(16)"
+      },
+      {
+        "name": "url",
+        "type": "varchar(31)"
+      }
+    ],
+    "primaryKeys": [
+      "personcode",
+      "sitecode"
+    ],
+    "fileName": "inducks_personurl.isv"
+  },
+  {
+    "tableName": "characterurl",
+    "foreignKeys": [
+      {
+        "column": "sitecode",
+        "referenceTable": "site",
+        "referenceColumn": "sitecode"
+      },
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "sitecode",
+        "type": "varchar(16)"
+      },
+      {
+        "name": "url",
+        "type": "varchar(1)"
+      }
+    ],
+    "primaryKeys": [
+      "charactercode",
+      "sitecode"
+    ],
+    "fileName": "inducks_characterurl.isv"
+  },
+  {
+    "tableName": "storyurl",
+    "foreignKeys": [
+      {
+        "column": "sitecode",
+        "referenceTable": "site",
+        "referenceColumn": "sitecode"
+      },
+      {
+        "column": "storycode",
+        "referenceTable": "story",
+        "referenceColumn": "storycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "storycode",
+        "type": "varchar(39)"
+      },
+      {
+        "name": "sitecode",
+        "type": "varchar(16)"
+      },
+      {
+        "name": "url",
+        "type": "varchar(43)"
+      }
+    ],
+    "primaryKeys": [
+      "storycode",
+      "sitecode"
+    ],
+    "fileName": "inducks_storyurl.isv"
+  },
+  {
+    "tableName": "publicationurl",
+    "foreignKeys": [
+      {
+        "column": "sitecode",
+        "referenceTable": "site",
+        "referenceColumn": "sitecode"
+      },
+      {
+        "column": "publicationcode",
+        "referenceTable": "publication",
+        "referenceColumn": "publicationcode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "publicationcode",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "sitecode",
+        "type": "varchar(16)"
+      },
+      {
+        "name": "url",
+        "type": "varchar(236)"
+      }
+    ],
+    "primaryKeys": [
+      "publicationcode",
+      "sitecode"
+    ],
+    "fileName": "inducks_publicationurl.isv"
+  },
+  {
+    "tableName": "statpersonstory",
+    "foreignKeys": [
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      },
+      {
+        "column": "storyheadercode",
+        "referenceTable": "storyheader",
+        "referenceColumn": "storyheadercode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "storyheadercode",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "total",
+        "type": "int"
+      },
+      {
+        "name": "yearrange",
+        "type": "varchar(62)"
+      }
+    ],
+    "primaryKeys": [
+      "personcode",
+      "storyheadercode"
+    ],
+    "fileName": "inducks_statpersonstory.isv"
+  },
+  {
+    "tableName": "statpersoncountry",
+    "foreignKeys": [
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      },
+      {
+        "column": "countrycode",
+        "referenceTable": "country",
+        "referenceColumn": "countrycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "countrycode",
+        "type": "varchar(2)"
+      },
+      {
+        "name": "total",
+        "type": "int"
+      }
+    ],
+    "primaryKeys": [
+      "personcode",
+      "countrycode"
+    ],
+    "fileName": "inducks_statpersoncountry.isv"
+  },
+  {
+    "tableName": "statpersonperson",
+    "foreignKeys": [
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "copersoncode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "total",
+        "type": "int"
+      },
+      {
+        "name": "yearrange",
+        "type": "varchar(59)"
+      }
+    ],
+    "primaryKeys": [
+      "personcode",
+      "total"
+    ],
+    "fileName": "inducks_statpersonperson.isv"
+  },
+  {
+    "tableName": "statpersoncharacter",
+    "foreignKeys": [
+      {
+        "column": "personcode",
+        "referenceTable": "person",
+        "referenceColumn": "personcode"
+      },
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "personcode",
+        "type": "varchar(79)"
+      },
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "total",
+        "type": "int"
+      },
+      {
+        "name": "yearrange",
+        "type": "varchar(113)"
+      }
+    ],
+    "primaryKeys": [
+      "personcode",
+      "total"
+    ],
+    "fileName": "inducks_statpersoncharacter.isv"
+  },
+  {
+    "tableName": "statcharacterstory",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      },
+      {
+        "column": "storyheadercode",
+        "referenceTable": "storyheader",
+        "referenceColumn": "storyheadercode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "storyheadercode",
+        "type": "varchar(12)"
+      },
+      {
+        "name": "total",
+        "type": "int"
+      },
+      {
+        "name": "yearrange",
+        "type": "varchar(113)"
+      }
+    ],
+    "primaryKeys": [
+      "charactercode",
+      "storyheadercode"
+    ],
+    "fileName": "inducks_statcharacterstory.isv"
+  },
+  {
+    "tableName": "statcharactercountry",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      },
+      {
+        "column": "countrycode",
+        "referenceTable": "country",
+        "referenceColumn": "countrycode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "countrycode",
+        "type": "varchar(2)"
+      },
+      {
+        "name": "total",
+        "type": "int"
+      }
+    ],
+    "primaryKeys": [
+      "charactercode",
+      "countrycode"
+    ],
+    "fileName": "inducks_statcharactercountry.isv"
+  },
+  {
+    "tableName": "statcharactercharacter",
+    "foreignKeys": [
+      {
+        "column": "charactercode",
+        "referenceTable": "character",
+        "referenceColumn": "charactercode"
+      }
+    ],
+    "columns": [
+      {
+        "name": "charactercode",
+        "type": "varchar(69)"
+      },
+      {
+        "name": "cocharactercode",
+        "type": "varchar(58)"
+      },
+      {
+        "name": "total",
+        "type": "int"
+      },
+      {
+        "name": "yearrange",
+        "type": "varchar(152)"
+      }
+    ],
+    "primaryKeys": [
+      "charactercode",
+      "total"
+    ],
+    "fileName": "inducks_statcharactercharacter.isv"
+  }
+]

@@ -1,0 +1,39 @@
+version: '3'
+services:
+  server:
+    container_name: postgrest
+    image: postgrest/postgrest
+    ports:
+      - "8081:3000"
+    environment:
+      PGRST_DB_URI: postgres://auth:password@db:5432/inducks
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:8081
+      PGRST_DB_SCHEMAS: inducks
+      PGRST_DB_ANON_ROLE: web_anon
+    depends_on:
+      - db
+  db:
+    container_name: postgres-db
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: inducks
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+#      Add ISV files mapping to the docker container
+      - "./isv:/isv"
+      - "postgres:/var/lib/postgresql/data"
+
+  swagger:
+    container_name: swagger
+    image: spryker/swagger-ui:v3.24.3
+    ports:
+      - "8082:8080"
+    expose:
+      - "8080"
+    environment:
+      API_URL: http://localhost:3000/
+volumes:
+  postgres:
