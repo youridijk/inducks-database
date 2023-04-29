@@ -2,14 +2,25 @@ import * as fs from "fs";
 import {open} from "fs/promises";
 import firstline from 'firstline';
 
-export async function formatISVFiles(isvFolder: string) {
-    const files = fs.readdirSync(isvFolder);
-    for (const file of files) {
-        if (!file.endsWith('.isv')) {
-            continue;
+export async function formatISVFiles(isvFolder: string, concurrent = false) {
+    const files = fs
+        .readdirSync(isvFolder)
+        .filter(file => file.endsWith('.isv'));
+
+    if (concurrent) {
+        const promises = files
+            .map(async function (file: string){
+                await formatISVFile(isvFolder + '/' + file);
+                console.log('File ' + file + ' done');
+            });
+
+        console.log('all')
+        await Promise.all(promises);
+    } else {
+        for (const file of files) {
+            await formatISVFile(isvFolder + '/' + file);
+            console.log('File ' + file + ' done');
         }
-        await formatISVFile(isvFolder + '/' + file);
-        console.log('File ' + file + ' done');
     }
 }
 

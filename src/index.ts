@@ -15,16 +15,25 @@ yargs(hideBin(process.argv))
     .usage('Usage: $0 <command> [options]')
     .command('format', 'Format all the ISV files into CSV that PostgreSQL can read', (yargs) => {
         return yargs
+            .option('concurrent', {
+                alias: 'c'
+            })
             .demandOption('isvdir', '--isvdir The path to the directory containing all ISV files from Inducks')
     }, async (argv) => {
         try {
+            const concurrent: boolean = argv.concurrent as  boolean;
+
+            if (concurrent) {
+                console.log('Using concurrent mode');
+            }
+
             const isvDir = String(argv.isvdir);
             const resolvedISVDir = path.resolve(isvDir);
             if (!fs.existsSync(resolvedISVDir)) {
                 throw Error(`Path doesn't exist: ${resolvedISVDir}`);
             }
 
-            await formatISVFiles(resolvedISVDir);
+            await formatISVFiles(resolvedISVDir, concurrent);
         } catch (e) {
             console.log(e.message)
         }
@@ -152,6 +161,11 @@ yargs(hideBin(process.argv))
     .option('isvfile', {
         describe: 'The ISV file you want to download. Use \'all\' to download all the files',
         type: 'string'
+    })
+    .option('concurrent', {
+        description: 'Whether you want to format the files one by one or at the same time (concurrent)',
+        type: 'boolean',
+        short: 'c'
     })
     // A todo for later
     // .option('sql-lang', {
