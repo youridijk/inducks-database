@@ -1,12 +1,15 @@
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from 'fs';
+import * as path from 'path';
+import decompress from 'decompress';
 
 import yargs from 'yargs'
 import {hideBin} from 'yargs/helpers'
 
-import {createTablesJSON} from "./TableJSON";
-import {formatISVFiles} from "./ISV";
-import {mapping} from "./QueryBuilders/Mapping";
+import {createTablesJSON} from './TableJSON';
+import {formatISVFiles} from './ISV';
+import {mapping} from './QueryBuilders/Mapping';
+import downloadWithProgress from './vendor/DownloadWithProgress';
+import {allowedISVFiles} from './data/AllowedISVFiles';
 
 yargs(hideBin(process.argv))
     .usage('Usage: $0 <command> [options]')
@@ -15,8 +18,8 @@ yargs(hideBin(process.argv))
             .demandOption('isvdir', '--isvdir The path to the directory containing all ISV files from Inducks')
     }, async (argv) => {
         try {
-            const isvdir = String(argv.isvdir);
-            const resolvedISVDir = path.resolve(isvdir);
+            const isvDir = String(argv.isvdir);
+            const resolvedISVDir = path.resolve(isvDir);
             if (!fs.existsSync(resolvedISVDir)) {
                 throw Error(`Path doesn't exist: ${resolvedISVDir}`);
             }
@@ -74,6 +77,59 @@ yargs(hideBin(process.argv))
             console.log(e.message);
         }
     })
+    .command('download', 'Download ISV files from Inducks', (yargs) => {
+        return yargs
+            .demandOption('isvfile')
+            .demandOption('output', 'The directory where the ISV files will be stored after download')
+
+    }, async (argv) => {
+        let isvFile = String(argv.isvfile);
+        const isvFileFull = 'inducks_' + isvFile;
+        const output = String(argv.output);
+        const downloadAll = isvFile === 'all';
+
+        try {
+            if (!allowedISVFiles.includes(isvFile) && !allowedISVFiles.includes(isvFileFull)) {
+                throw new Error(`'${isvFile}' not allowed to download`)
+            }
+
+            if (!isvFile.startsWith('inducks_')) {
+                isvFile = isvFileFull;
+            }
+
+            if (fs.existsSync(output)) {
+                const fileStat = fs.statSync(output);
+                if (!fileStat.isDirectory()) {
+                    throw new Error('Output path is not a directory');
+                }
+            } else {
+                fs.mkdirSync(output, {
+                    recursive: true
+                })
+            }
+
+            const url = 'https://inducks.org/inducks/' + (downloadAll ? 'isv.tgz' : 'isv/' + isvFile);
+
+            if (downloadAll) {
+                isvFile = 'isv.tgz';
+            }
+
+            const downloadPath = path.join(output, isvFile);
+            await downloadWithProgress(url, downloadPath);
+
+            if (downloadAll) {
+                console.log(`Decompressing '${downloadPath}' to ${output}`);
+                await decompress(downloadPath, output);
+
+                if (fs.existsSync(downloadPath)) {
+                    fs.unlinkSync(downloadPath);
+                    console.log('Deleted ' + downloadPath);
+                }
+            }
+        } catch (e) {
+            console.log(e.message);
+        }
+    })
     .option('isvdir', {
         describe: 'The directory the ISV files are located',
         type: 'string',
@@ -92,6 +148,10 @@ yargs(hideBin(process.argv))
         describe: 'The type of SQL script you want to generate',
         type: 'string',
         alias: 's'
+    })
+    .option('isvfile', {
+        describe: 'The ISV file you want to download. Use \'all\' to download all the files',
+        type: 'string'
     })
     // A todo for later
     // .option('sql-lang', {

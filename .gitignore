@@ -126,3 +126,4 @@ test.ts
 meilisearch/data
 data.ms
 isv
+*.icloud

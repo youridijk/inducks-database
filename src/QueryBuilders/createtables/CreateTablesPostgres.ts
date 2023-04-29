@@ -4,8 +4,6 @@ import QueryBuilder from "../QueryBuilder";
 import Step from "../../model/Step";
 
 export default class CreateTablesPostgres extends QueryBuilder {
-    public CSVPathSettingName = 'csv.base_path';
-
     public getCreateStatement(tableData: TableData): string {
         const {tableName} = tableData;
         const joinedPKs = tableData.primaryKeys.join(', ');
@@ -114,16 +112,6 @@ export default class CreateTablesPostgres extends QueryBuilder {
         }.bind(this));
     }
 
-    public getPrimaryKeyIndexCreateStatement(tableData: TableData): string {
-        const indexName = `pk_index_${tableData.tableName}`;
-        return `CREATE INDEX ${indexName} ON ${this.getSchemaName()}.${tableData.tableName}_temp (${tableData.primaryKeys.join(',')});`;
-    }
-
-    public getPrimaryKeyIndexDropStatement(tableData: TableData): string {
-        const indexName = `pk_index_${tableData.tableName}`;
-        return `DROP INDEX IF EXISTS ${indexName};`
-    }
-
     public getForeignKeyStatement(tableData: TableData): string {
         const {tableName} = tableData;
         const schemeName = this.getSchemaName();
@@ -169,8 +157,7 @@ export default class CreateTablesPostgres extends QueryBuilder {
     }
 
     public getAdditionalQueriesStart(): string {
-        return `set session csv.base_path = '${this.CSVDirPath}';` + '\n' +
-            `CREATE SCHEMA IF NOT EXISTS ${this.getSchemaName()};`
+        return `CREATE SCHEMA IF NOT EXISTS ${this.getSchemaName()};`;
     }
 
     public getAdditionalQueriesEnd(): string {
@@ -228,7 +215,7 @@ export default class CreateTablesPostgres extends QueryBuilder {
 
         return [
             {
-                stepTitle: 'Set base path for CSV files',
+                stepTitle: 'Create schema',
                 stepString: this.getAdditionalQueriesStart(),
             },
             {
@@ -239,14 +226,6 @@ export default class CreateTablesPostgres extends QueryBuilder {
                 stepTitle: 'Create tables',
                 stepString: createStatements.join('\n'),
             },
-            // {
-            //     stepTitle: 'Drop primary keys indexes',
-            //     stepString: primaryKeyIndexesDropStatements.join('\n'),
-            // },
-            // {
-            //     stepTitle: 'Create primary keys indexes',
-            //     stepString: primaryKeyIndexesCreateStatements.join('\n'),
-            // },
             {
                 stepTitle: 'Drop foreign keys indexes',
                 stepString: foreignKeyIndexDropStatements.join('\n'),
