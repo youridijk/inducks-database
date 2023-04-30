@@ -29,6 +29,7 @@ RUN npm start -- generate --isvdir /isv -i ./tables.json -o "$CREATE_TABLES_FILE
 
 # Stage to create a dump of the database
 # This way, final container doesn't contain ISV and is faster to boot
+# Credits to https://cadu.dev/creating-a-docker-image-with-database-preloaded/
 FROM postgres:alpine as dumper
 
 # Copy SQL file and ISV from previous container
@@ -50,7 +51,9 @@ RUN ["/usr/local/bin/docker-entrypoint.sh", "postgres"]
 
 # Start postgres in background, wait 5 seconds to boot it, make the dump and kill postgres
 RUN su postgres -s $(which postgres) & sleep 5  &&  \
-    pg_dump -U $POSTGRES_USER -W $POSTGRES_PASSWORD -h 127.0.0.1 $POSTGRES_DB > $DUMP_FILE
+    pg_dump -U $POSTGRES_USER -W $POSTGRES_PASSWORD -h 127.0.0.1 $POSTGRES_DB > $DUMP_FILE \
+RUN grep -v "OWNER" $DUMP_FILE > "$DUMP_FILE-2"
+RUN mv "$DUMP_FILE-2" $DUMP_FILE
 
 # Final build stage
 FROM postgres:alpine
