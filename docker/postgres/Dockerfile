@@ -14,9 +14,9 @@ RUN npm run build
 ENV CREATE_TABLES_FILE=/sql/1-createTablesPostgREST.sql
 
 # Download the ISV files
-#RUN npm start -- download --isvfile all -o /
-COPY ./isv.tgz /
-RUN cd / && tar xf /isv.tgz
+RUN npm start -- download --isvfile all -o /
+#COPY ./isv.tgz /
+#RUN cd / && tar xf /isv.tgz
 RUN npm start -- format --isvdir /isv -c
 RUN rm -rf /isv/*.isv
 RUN mkdir -p "/sql"
