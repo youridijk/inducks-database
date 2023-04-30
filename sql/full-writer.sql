@@ -1,5 +1,6 @@
 -- Describes the job: i=indexing, t=translation, l=lettering, c=colouring
-update inducks.issuejob
+set search_path to inducks;
+update issuejob
 set inxtransletcol = CASE
                          WHEN (inxtransletcol = 'i') THEN 'indexing'
                          WHEN (inxtransletcol = 't') THEN 'translation'
@@ -22,7 +23,7 @@ END;
 -- '?' = uncertain
 create index storyversion_kind on storyversion (kind);
 create index storyversion_what on storyversion (what);
-update inducks.storyversion
+update storyversion
 set kind = CASE
                          WHEN (kind = 'i') THEN 'illustration'
                          WHEN (kind = 'c') THEN 'cover'
