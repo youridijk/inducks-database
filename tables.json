@@ -2236,7 +2236,7 @@
       },
       {
         "name": "entryjobcomment",
-        "type": "varchar(51)"
+        "type": "varchar(85)"
       },
       {
         "name": "doubt",

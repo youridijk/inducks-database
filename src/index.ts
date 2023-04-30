@@ -35,7 +35,8 @@ yargs(hideBin(process.argv))
 
             await formatISVFiles(resolvedISVDir, concurrent);
         } catch (e) {
-            console.log(e.message)
+            console.log(e.message);
+            yargs.exit(1, e.message);
         }
     })
     .command('parse', 'Parse original createtables.sql file into a JSON file containing all data about the tables', (yargs) => {
@@ -54,6 +55,7 @@ yargs(hideBin(process.argv))
             console.log('Created ', output);
         } catch (e) {
             console.log(e.message);
+            yargs.exit(1, e.message);
         }
     })
     .command('generate', 'Generate a SQL file to create and fill all the Inducks tables with foreign keys', (yargs) => {
@@ -84,6 +86,7 @@ yargs(hideBin(process.argv))
             console.log('Created ', output);
         } catch (e) {
             console.log(e.message);
+            yargs.exit(1, e.message);
         }
     })
     .command('download', 'Download ISV files from Inducks', (yargs) => {
@@ -137,6 +140,7 @@ yargs(hideBin(process.argv))
             }
         } catch (e) {
             console.log(e.message);
+            yargs.exit(1, e.message);
         }
     })
     .option('isvdir', {
