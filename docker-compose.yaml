@@ -11,7 +11,7 @@ services:
       PGRST_DB_SCHEMAS: inducks
       PGRST_DB_ANON_ROLE: web_anon
     depends_on:
-      - db
+      - postgres-db
   postgres-db:
     container_name: postgres-db
     build: ./docker/postgres/Dockerfile
@@ -37,7 +37,7 @@ services:
       API_URL: http://localhost:3000/
 
   image-proxy:
-    image: https://github.com/willnorris/imageproxy.git
+    build: https://github.com/willnorris/imageproxy.git
     ports:
       - "8204:8080"
 
