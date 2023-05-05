@@ -7,12 +7,8 @@ export default class CreateTablesPostgREST extends CreateTablesPostgres {
         return 'web_anon';
     }
 
-    public getLoginRoleName(): string {
-        return 'auth';
-    }
-
     public getAdditionalQueriesStartPostgREST(): string {
-        // create anom role with read only rights and a login user that only has access to inducks schema
+        // create anom role with read only rights
         return 'CREATE OR REPLACE FUNCTION inducks.create_role_if_not_exists(rolename NAME) RETURNS TEXT AS\n' +
             '$$\n' +
             'BEGIN\n' +
@@ -28,12 +24,7 @@ export default class CreateTablesPostgREST extends CreateTablesPostgres {
             'SELECT * \n' +
             `FROM ${this.getSchemaName()}.create_role_if_not_exists('${this.getAnomRoleName()}');\n` +
             `ALTER ROLE ${this.getAnomRoleName()} NOLOGIN;\n` +
-            `GRANT USAGE ON SCHEMA ${this.getSchemaName()} TO ${this.getAnomRoleName()};\n` +
-            'SELECT * \n' +
-            `FROM ${this.getSchemaName()}.create_role_if_not_exists('${this.getLoginRoleName()}');\n` +
-            `ALTER ROLE ${this.getLoginRoleName()} LOGIN;\n` +
-            `ALTER ROLE ${this.getLoginRoleName()} WITH password 'password';\n` +
-            `GRANT ${this.getAnomRoleName()} TO ${this.getLoginRoleName()};`
+            `GRANT USAGE ON SCHEMA ${this.getSchemaName()} TO ${this.getAnomRoleName()};\n`;
     }
 
     public getGrantSelectOnTableStatement(tableData: TableData): string {
