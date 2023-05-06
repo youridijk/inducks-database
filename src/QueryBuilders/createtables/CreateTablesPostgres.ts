@@ -69,11 +69,11 @@ export default class CreateTablesPostgres extends QueryBuilder {
     }
 
     public getRenameCurrentToOldStatement(tableName: string): string {
-        return `ALTER TABLE IF EXISTS ${this.getSchemaName()}.${tableName} RENAME TO ${tableName}_old;`
+        return `ALTER TABLE IF EXISTS ${this.getSchemaName()}.${tableName} RENAME TO ${this.getSchemaName()}.${tableName}_old;`
     }
 
     public getRenameTempToNormalStatement(tableName: string): string {
-        return `ALTER TABLE ${this.getSchemaName()}.${tableName}_temp RENAME TO ${tableName};`;
+        return `ALTER TABLE IF EXISTS ${this.getSchemaName()}.${tableName}_temp RENAME TO ${this.getSchemaName()}.${tableName};`;
     }
 
     public tableHasForeignKeys(tableData: TableData): boolean {

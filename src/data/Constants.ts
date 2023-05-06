@@ -1,3 +1,5 @@
+import {mapping} from "../QueryBuilders/Mapping";
+
 export const allowedISVFiles = [
     'all',
     'inducks_appearance.isv',
@@ -72,4 +74,8 @@ export const allowedISVFiles = [
     'inducks_ucrelation.isv',
     'inducks_universe.isv',
     'inducks_universename.isv',
-]
+];
+
+export const supportedDataBases = Object.keys(mapping);
+
+export const supportedScripts = [...new Set(Object.values(mapping).map( Object.keys).flat())];

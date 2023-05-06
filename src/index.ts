@@ -9,7 +9,7 @@ import {createTablesJSON} from './TableJSON';
 import {formatISVFiles} from './ISV';
 import {mapping} from './QueryBuilders/Mapping';
 import downloadWithProgress from './vendor/DownloadWithProgress';
-import {allowedISVFiles} from './data/AllowedISVFiles';
+import {allowedISVFiles, supportedDataBases, supportedScripts} from "./data/Constants";
 
 yargs(hideBin(process.argv))
     .usage('Usage: $0 <command> [options]')
@@ -63,25 +63,32 @@ yargs(hideBin(process.argv))
             .demandOption('input', '--input The tables JSON file containing all info about the tables. Needs to be in the format of the file generated using --parse')
             .demandOption('isvdir', '--isvdir The directory containing all the formatted ISV files (the CSV files from --format). Doesn\'t need to exist, so can be used in Docker')
             .demandOption('output', '--output The filename of the generated SQL file.')
-            .demandOption('script', '--script The type of SQL script you want to generate.');
+            .demandOption('script', '--script The type of SQL script you want to generate. Must be one of the following: ' + supportedScripts.join(', '))
+            .demandOption('database', '--database The target database used for the script generation. Must be one of ' + supportedDataBases.join(', '));
     }, (argv) => {
         const input = String(argv.input);
         const isvDir = String(argv.isvdir);
         const output = String(argv.output);
         const script = String(argv.script);
+        const database = String(argv.database);
+
         try {
+            if (!supportedDataBases.includes(database)) {
+                throw Error(`Database not support: ${database}. Supported are ${supportedDataBases.join(', ')}`);
+            }
+
+            if (!supportedScripts.includes(script)) {
+                throw Error(`Script not support: ${script}. Supported are ${supportedScripts.join(', ')}`);
+            }
+
             const resolvedTablesJSONFile = path.resolve(input);
             if (!fs.existsSync(resolvedTablesJSONFile)) {
                 throw Error(`Path doesn't exist: ${resolvedTablesJSONFile}`);
             }
 
-            const queryBuilderObject = mapping[script];
+            const queryBuilderObject = mapping[database][script];
 
-            if (!queryBuilderObject) {
-                throw Error(`Script must be one of the following: '${Object.keys(mapping).join(', ')}', not: ${script}`);
-            }
-
-            const queryBuilder = new queryBuilderObject.psql(resolvedTablesJSONFile, isvDir);
+            const queryBuilder = new queryBuilderObject(resolvedTablesJSONFile, isvDir);
             queryBuilder.save(output);
             console.log('Created ', output);
         } catch (e) {
@@ -158,9 +165,15 @@ yargs(hideBin(process.argv))
         alias: 'o'
     })
     .option('script', {
-        describe: 'The type of SQL script you want to generate',
+        describe: 'The type of SQL script you want to generate. Must be one of the following: ' + supportedScripts.join(', '),
         type: 'string',
         alias: 's'
+    })
+    // A todo for later
+    .option('database', {
+        describe: '--database The target database used for the script generation. Must be one of ' + supportedDataBases.join(', '),
+        type: 'string',
+        short: 'd',
     })
     .option('isvfile', {
         describe: 'The ISV file you want to download. Use \'all\' to download all the files',
@@ -171,11 +184,6 @@ yargs(hideBin(process.argv))
         type: 'boolean',
         short: 'c'
     })
-    // A todo for later
-    // .option('sql-lang', {
-    //     describe: 'The SQL language you want to generate the SQL into',
-    //     type: 'string',
-    // })
     .help('h')
     .alias('h', 'help')
     .parse()
