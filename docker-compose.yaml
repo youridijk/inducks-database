@@ -6,7 +6,7 @@ services:
     ports:
       - "8201:3000"
     environment:
-      PGRST_DB_URI: postgres://auth:password@db:5432/inducks
+      PGRST_DB_URI: postgres://auth:password@postgres-db:5432/inducks
       PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:8081
       PGRST_DB_SCHEMAS: inducks
       PGRST_DB_ANON_ROLE: web_anon
@@ -16,15 +16,18 @@ services:
     container_name: postgres-db
     build:
       context: .
-      dockerfile: ./docker/postgres/Dockerfile
+      dockerfile: docker/database/Dockerfile
+      args:
+        DATABASE_IMAGE: postgres:alpine
+        DATABASE_TARGET: postgrest
     ports:
       - "8202:5432"
     environment:
       POSTGRES_DB: inducks
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_AUTH_USER: auth
-      POSTGRES_AUTH_PASSWORD: password
+      AUTH_USER: auth
+      AUTH_PASSWORD: password
     volumes:
       - "./inducks-db-data:/var/lib/postgresql/data"
 
