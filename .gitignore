@@ -127,3 +127,5 @@ meilisearch/data
 data.ms
 isv
 *.icloud
+image-proxy-cache
+db

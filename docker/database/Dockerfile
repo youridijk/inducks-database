@@ -2,10 +2,11 @@ ARG DATABASE_IMAGE=postgres:alpine
 ARG DATABASE_TARGET=postgres
 
 # CLI build stage
-FROM node:lts as cli
+FROM node:alpine as cli
 ARG DATABASE_TARGET
 
 WORKDIR /
+RUN apk add curl
 # Download the ISV files
 RUN curl 'https://inducks.org/inducks/isv.tgz' -o isv.tgz
 RUN tar xf /isv.tgz
@@ -34,3 +35,4 @@ COPY ./docker/database/docker-entrypoint-initdb.d/$DATABASE_TARGET  /docker-entr
 COPY ./sql/full-writer.sql  /docker-entrypoint-initdb.d/2-full-writer.sql
 COPY --from=cli /sql/1-createtables.sql /docker-entrypoint-initdb.d/
 COPY --from=cli /isv /isv
+#RUN chmod +x /docker-entrypoint-initdb.d/*.sh

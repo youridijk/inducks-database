@@ -1,19 +1,23 @@
 version: '3'
 services:
-  postgrest:
-    container_name: postgrest
-    image: postgrest/postgrest
+  mariadb:
+    container_name: mariadb
+    build:
+      context: .
+      dockerfile: docker/database/Dockerfile
+      args:
+        DATABASE_IMAGE: mariadb
+        DATABASE_TARGET: mysql
     ports:
-      - "8201:3000"
+      - "3306:3306"
     environment:
-      PGRST_DB_URI: postgres://auth:password@postgres-db:5432/inducks
-      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:8081
-      PGRST_DB_SCHEMAS: inducks
-      PGRST_DB_ANON_ROLE: web_anon
-    depends_on:
-      - postgres-db
-  postgres-db:
-    container_name: postgres-db
+      MARIADB_RANDOM_ROOT_PASSWORD: yes
+      MARIADB_DATABASE: inducks
+    volumes:
+      - "./db/mariadb:/var/lib/mysql"
+
+  postgres_db:
+    container_name: postgres_db
     build:
       context: .
       dockerfile: docker/database/Dockerfile
@@ -29,7 +33,20 @@ services:
       AUTH_USER: auth
       AUTH_PASSWORD: password
     volumes:
-      - "./inducks-db-data:/var/lib/postgresql/data"
+      - "./db/postgres:/var/lib/postgresql/data"
+
+  postgrest:
+    container_name: postgrest
+    image: postgrest/postgrest
+    ports:
+      - "8201:3000"
+    environment:
+      PGRST_DB_URI: postgres://auth:password@postgres_db:5432/inducks
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:8081
+      PGRST_DB_SCHEMAS: inducks
+      PGRST_DB_ANON_ROLE: web_anon
+    depends_on:
+      - postgres_db
 
   swagger:
     container_name: swagger
@@ -41,8 +58,16 @@ services:
     environment:
       API_URL: http://localhost:3000/
 
-  image-proxy:
+  image_proxy:
+    container_name: image_proxy
     build: https://github.com/willnorris/imageproxy.git
     ports:
       - "8204:8080"
+    volumes:
+      - "./image-proxy-cache:/cache"
+    environment:
+#      IMAGEPROXY_BASE_URL: https://inducks.org/hr.php?image=
+      IMAGEPROXY_SCALEUP: true
+      IMAGEPROXY_ALLOWHOSTS: "inducks.org,*.dijk.cc"
+      IMAGEPROXY_CACHE: memory:100:24h /cache
 
