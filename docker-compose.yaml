@@ -41,8 +41,8 @@ services:
     ports:
       - "8203:3000"
     environment:
-      PGRST_DB_URI: postgres://auth:password@postgres_db:5432/inducks
-      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:8201
+      PGRST_DB_URI: postgres://auth:password@postgres_db:8202/inducks
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:8203
       PGRST_DB_SCHEMAS: inducks
       PGRST_DB_ANON_ROLE: web_anon
     depends_on:

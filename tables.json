@@ -2383,7 +2383,7 @@
       },
       {
         "name": "storysubseriescomment",
-        "type": "varchar(29)"
+        "type": "varchar(35)"
       }
     ],
     "primaryKeys": [
