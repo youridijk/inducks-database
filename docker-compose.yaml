@@ -39,7 +39,7 @@ services:
     container_name: postgrest
     image: postgrest/postgrest
     ports:
-      - "8202:3000"
+      - "8203:3000"
     environment:
       PGRST_DB_URI: postgres://auth:password@postgres_db:5432/inducks
       PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:8201
