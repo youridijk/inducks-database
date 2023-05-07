@@ -9,7 +9,7 @@ services:
         DATABASE_IMAGE: mariadb
         DATABASE_TARGET: mysql
     ports:
-      - "3306:3306"
+      - "8201:3306"
     environment:
       MARIADB_RANDOM_ROOT_PASSWORD: yes
       MARIADB_DATABASE: inducks
@@ -39,10 +39,10 @@ services:
     container_name: postgrest
     image: postgrest/postgrest
     ports:
-      - "8201:3000"
+      - "8202:3000"
     environment:
       PGRST_DB_URI: postgres://auth:password@postgres_db:5432/inducks
-      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:8081
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:8201
       PGRST_DB_SCHEMAS: inducks
       PGRST_DB_ANON_ROLE: web_anon
     depends_on:
@@ -52,17 +52,17 @@ services:
     container_name: swagger
     image: spryker/swagger-ui:v3.24.3
     ports:
-      - "8203:8080"
+      - "8204:8080"
     expose:
       - "8080"
     environment:
-      API_URL: http://localhost:3000/
+      API_URL: http://localhost:8201/
 
   image_proxy:
     container_name: image_proxy
     build: https://github.com/willnorris/imageproxy.git
     ports:
-      - "8204:8080"
+      - "8205:8080"
     volumes:
       - "./image-proxy-cache:/cache"
     environment:
