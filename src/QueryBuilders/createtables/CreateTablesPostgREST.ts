@@ -31,6 +31,13 @@ export default class CreateTablesPostgREST extends CreateTablesPostgres {
         return `GRANT SELECT ON ${this.getSchemaName()}.${tableData.tableName}_temp TO ${this.getAnomRoleName()};`
     }
 
+    public getCreateMD5Indexes(tableData: TableData[]): string {
+        return tableData.map(table => {
+            const joinedPrimaryKeys = table.primaryKeys.join(', ')
+            return `CREATE INDEX md5_${table.tableName} ON (${joinedPrimaryKeys});`;
+        }).join('\n')
+    }
+
     getFinalQuerySteps(tableJSON: TableData[]): Step[] {
         const postgresSteps = super.getFinalQuerySteps(tableJSON);
         const additionalSteps: Step[] = [
@@ -41,13 +48,14 @@ export default class CreateTablesPostgREST extends CreateTablesPostgres {
             {
                 stepTitle: 'Grant usage on tables',
                 stepString: tableJSON.map(this.getGrantSelectOnTableStatement.bind(this)).join('\n'),
+            },
+            {
+                stepTitle: 'Create MD5 indexes on all primary keys',
+                stepString: this.getCreateMD5Indexes(tableJSON),
             }
         ];
-        const insertIndex = postgresSteps.length - 4;
 
-        for (const [index, additionalStep] of additionalSteps.entries()) {
-            postgresSteps.splice(insertIndex + index, 0, additionalStep);
-        }
+        postgresSteps.push(...additionalSteps)
 
         return postgresSteps;
     }
