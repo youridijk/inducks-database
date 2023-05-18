@@ -128,4 +128,5 @@ data.ms
 isv
 *.icloud
 image-proxy-cache
+image_proxy_cache
 db

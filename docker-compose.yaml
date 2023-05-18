@@ -60,30 +60,16 @@ services:
 
   image_proxy:
     container_name: image_proxy
-    build: https://github.com/willnorris/imageproxy.git
+    build:
+      dockerfile: docker/image_proxy/Dockerfile
+      context: .
     ports:
       - "8205:8080"
     volumes:
-      - "./image-proxy-cache:/cache"
+      - "./image_proxy_cache:/cache"
     environment:
-      PUID: 1000
-      PGID: 1000
 #      IMAGEPROXY_BASEURL: https://inducks.org/hr.php?image=
       IMAGEPROXY_SCALEUP: true
 #      IMAGEPROXY_ALLOWHOSTS: "inducks.org,*.dijk.cc"
-#      IMAGEPROXY_CACHE: memory:100:24h /cache
-      IMAGEPROXY_CACHE: redis://redis:6379
+      IMAGEPROXY_CACHE: memory:100:24h /cache
       IMAGEPROXY_VERBOSE: true
-    depends_on:
-      - redis
-
-  redis:
-    container_name: redis
-    image: redis:alpine
-    command: redis-server /usr/local/etc/redis/redis.conf --appendonly yes
-    ports:
-      - "6397:6397"
-    volumes:
-      - ./db/redis:/data
-      - ./redis.conf:/usr/local/etc/redis
-
