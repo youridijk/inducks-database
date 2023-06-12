@@ -73,3 +73,11 @@ services:
 #      IMAGEPROXY_ALLOWHOSTS: "inducks.org,*.dijk.cc"
       IMAGEPROXY_CACHE: memory:100:24h /cache
       IMAGEPROXY_VERBOSE: true
+
+  meilisearch:
+    container_name: meilisearch
+    image: getmeili/meilisearch:v1.2
+    ports:
+      - "8206:7700"
+    volumes:
+      - "meili_data:/meili_data"
