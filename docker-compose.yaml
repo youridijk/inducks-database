@@ -80,4 +80,4 @@ services:
     ports:
       - "8206:7700"
     volumes:
-      - "meili_data:/meili_data"
+      - "./meili_data:/meili_data"
