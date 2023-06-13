@@ -1,3 +1,4 @@
+set search_path = 'inducks';
 select e.entrycode, 'https://inducks.org/hr.php?image=' || s.urlbase || e.url as fullurl, e.storycode, e.sitecode
 from inducks.entryurl e
          left join inducks.site s on s.sitecode = e.sitecode
@@ -29,27 +30,41 @@ where e.entrycode like 'nl/PO3 %'
 group by e.entrycode
 order by e.entrycode;
 
-drop function get_issue_image_urls;
+drop function get_issue_image_urls cascade ;
 create or replace function get_issue_image_urls(issue_code varchar(22))
-    returns text[]
+    returns table (
+        entrycode varchar(22),
+        fullurl text,
+        proxied_url text
+                  )
     language plpgsql
 as
 $$
 BEGIN
-    return array(
-            select 'https://inducks.org/hr.php?image=' || s.urlbase || eu.url as fullurl
-            from entryurl eu
-                     left join site s on s.sitecode = eu.sitecode
-            where eu.sitecode not like 'thumbnails%'
-              and eu.entrycode = (
-                  select e.entrycode
-                  from entry e
-                  where e.position = 'a' and e.issuecode = $1
-                )
-            order by eu.url
+    return query (
+        select eu.entrycode,
+               'https://inducks.org/hr.php?image=' || s.urlbase || eu.url as fullurl,
+               'https://inducks.dijk.cc/imageproxy/200px/' || 'https://inducks.org/hr.php?image=' || s.urlbase || eu.url || '&normalsize=1' as proxied_url
+        from entryurl eu
+            left join lateral (
+                select *
+                from site s
+                where s.sitecode = eu.sitecode
+            ) as s on true
+        where eu.sitecode not like 'thumbnails%'
+          and eu.entrycode = (
+            select e.entrycode
+            from entry e
+            where e.position = 'a' and e.issuecode = issue_code
+        )
+        order by eu.url
         );
 END;
 $$;
+
+
+select *
+from get_issue_image_urls('nl/PO3 219');
 
 select e.issuecode, e.entrycode
 from entry e
