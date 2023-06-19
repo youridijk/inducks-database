@@ -38,43 +38,53 @@ CREATE INDEX md5_issue ON issue (issuecode);
 
 DROP VIEW IF EXISTS meilisearch_issue;
 CREATE OR REPLACE VIEW meilisearch_issue AS
-SELECT MD5(i.issuecode)              AS id,
+SELECT MD5(i.issuecode)                                                  AS id,
        i.issuecode,
        i.issuerangecode,
        i.publicationcode,
-       i.title as issue_title,
+       i.title                                                           AS issue_title,
        i.issuenumber,
        i.oldestdate,
        i.filledoldestdate,
        i.fullyindexed,
-       issue_publication.title as publicaton_title,
-       issue_publication.title || ' ' || i.issuenumber as publication_title_issue_number,
---        row_to_json(issue_publication.*) AS publication,
-       CONCAT(issue_publication.title, ' ', i.issuenumber, ' ',
-              i.title)               AS full_title,
-       issue_publication.countrycode as countrycode,
-       issue_publication.languagecode as languagecode,
---        entries
-        image_urls.*
+       issue_publication.title                                           AS publicaton_title,
+       issue_publication.title || ' ' || i.issuenumber                   AS publication_title_issue_number,
+       CONCAT(issue_publication.title, ' ', i.issuenumber, ' ', i.title) AS full_title,
+       issue_publication.countrycode                                     AS countrycode,
+       issue_publication.countryname                                     AS countryname,
+       issue_publication.languagecode                                    AS languagecode,
+       image_urls.*
 FROM issue i
-    LEFT JOIN LATERAL ( SELECT json_agg(i) as image_urls
-        FROM get_issue_image_urls(i.issuecode) i
-
-        ) AS image_urls ON TRUE
+         LEFT JOIN LATERAL ( SELECT json_agg(i) AS image_urls
+                             FROM get_issue_image_urls(i.issuecode) i
+    ) AS image_urls ON TRUE
 
          LEFT JOIN LATERAL ( SELECT p.publicationcode,
                                     p.countrycode,
                                     p.languagecode,
-                                    p.title
+                                    p.title,
+                                    publication_country.countryname
+
                              FROM publication AS p
+
+                                      LEFT JOIN LATERAL ( SELECT *
+                                                          FROM country c
+                                                          WHERE c.countrycode = p.countrycode
+                                 ) AS publication_country ON TRUE
+
                              WHERE p.publicationcode =
-                                   i.publicationcode ) AS issue_publication ON TRUE
+                                   i.publicationcode
+
+
+    ) AS issue_publication ON TRUE
+
+
 --          LEFT JOIN LATERAL (SELECT entry_urls
 --                             FROM entry e
---                                      LEFT JOIN LATERAL (SELECT 'https://inducks.org/hr.php?image=' || site.urlbase ||
---                                                                eu.url || '?normalsize=1' as fullurl
+--                                      LEFT JOIN LATERAL (SELECT 'https://inducks.org/hr.php?image=' || site.urlbASe ||
+--                                                                eu.url || '?normalsize=1' AS fullurl
 --                                                         FROM entryurl eu
---                                                                  LEFT JOIN LATERAL ( SELECT s.urlbase
+--                                                                  LEFT JOIN LATERAL ( SELECT s.urlbASe
 --                                                                                      FROM site s
 --                                                                                      WHERE s.sitecode = eu.sitecode
 --                                                             ) AS site ON TRUE

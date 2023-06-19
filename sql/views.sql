@@ -18,10 +18,10 @@ select eu.entrycode,
        eu.public,
        'https://inducks.org/hr.php?image=' || s.urlbase || eu.url as fullurl
 from entryurl eu
-    left join lateral (
-        select *
-        from site s
-        where s.sitecode = eu.sitecode
+         left join lateral (
+    select *
+    from site s
+    where s.sitecode = eu.sitecode
     ) as s on true
 where eu.sitecode not like 'thumbnails%';
 grant select on full_entryurl to web_anon;
@@ -53,7 +53,7 @@ from equiv equiv_outer
          left join lateral (select *
                             from equiv equiv_inner
                             where equiv_inner.equivid = equiv_outer.equivid)
-             as equiv_issue on true
+    as equiv_issue on true
 group by equiv_outer.equivid;
 
 
@@ -61,13 +61,6 @@ grant select on equiv_issues to web_anon;
 
 select *
 from equiv_count;
-
-drop view test;
-create or replace view test as
-select eu.entrycode, 'https://inducks.org/hr.php?image=' || s.urlbase || eu.url as fullurl
-from entryurl eu
-         left join site s on s.sitecode = eu.sitecode;
-
 
 create function get_issue_equivalents(issue_code character varying)
     returns SETOF inducks.equiv
@@ -96,18 +89,16 @@ drop view issue_with_images;
 create or replace view issue_with_images as
 select i.*, json_agg(entries) as image_urls
 from issue i
-         left join lateral (
-    select entry_urls.*
-    from entry e
-            left join lateral (
-            select *
-                from full_entryurl eu
-                where eu.entrycode = e.entrycode
-    ) as entry_urls on true
-    where e.issuecode = i.issuecode
-      and e.position = 'a'
+         left join lateral (select entry_urls.*
+                            from entry e
+                                     left join lateral (select *
+                                                        from full_entryurl eu
+                                                        where eu.entrycode = e.entrycode
+                                ) as entry_urls on true
+                            where e.issuecode = i.issuecode
+                              and e.position = 'a'
     ) as entries on true
-where issuecode like 'nl/PO3 %'
+-- where issuecode like 'nl/PO3 %'
 group by i.issuecode;
 
 grant select on issue_with_images to web_anon;
@@ -115,12 +106,25 @@ grant select on issue_with_images to web_anon;
 
 drop view test;
 create view test as
-    select issuecode
+select issuecode
 from issue
 
 
 select *
 from full_issue_url
-left join issue i on full_issue_url.issuecode = i.issuecode;
+         left join issue i on full_issue_url.issuecode = i.issuecode;
 
 
+select *
+from issue
+where issuenumber like 'R%'
+-- where publicationcode = 'nl/PO3'
+-- and pages = '1'
+;
+
+select *
+from issue
+where issue.publicationcode like 'nl/PO3%';
+
+select distinct pages
+from issue
