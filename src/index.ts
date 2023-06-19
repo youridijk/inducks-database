@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import decompress from 'decompress';
 
-import yargs from 'yargs'
+import yargs, {locale} from 'yargs'
 import {hideBin} from 'yargs/helpers'
 
 import {createTablesJSON} from './TableJSON';
@@ -10,6 +10,10 @@ import {formatISVFiles} from './ISV';
 import {mapping} from './QueryBuilders/Mapping';
 import downloadWithProgress from './vendor/DownloadWithProgress';
 import {allowedISVFiles, supportedDataBases, supportedScripts} from "./data/Constants";
+import TableData from "./model/TableData";
+
+// https://stackoverflow.com/a/1026087/8882270
+const capitalize = <T extends string>(s: T) => (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>;
 
 yargs(hideBin(process.argv))
     .usage('Usage: $0 <command> [options]')
@@ -21,7 +25,7 @@ yargs(hideBin(process.argv))
             .demandOption('isvdir', '--isvdir The path to the directory containing all ISV files from Inducks')
     }, async (argv) => {
         try {
-            const concurrent: boolean = argv.concurrent as  boolean;
+            const concurrent: boolean = argv.concurrent as boolean;
 
             if (concurrent) {
                 console.log('Using concurrent mode');
@@ -149,6 +153,48 @@ yargs(hideBin(process.argv))
             console.log(e.message);
             yargs.exit(1, e.message);
         }
+    })
+    .command('generate-types', 'Generate types based on tables.json', (yargs) => {
+        return yargs
+            .demandOption('input', '--input The tables JSON file containing all info about the tables. Needs to be in the format of the file generated using --parse');
+    }, (argv) => {
+
+
+        const input = String(argv.input);
+
+        if (!fs.existsSync(input)) {
+            throw Error(`File ${input} not found`);
+        }
+
+        const tablesJSONString = fs.readFileSync(input).toString();
+        const tablesJSON = JSON.parse(tablesJSONString) as TableData[];
+
+        let typesString = '// Generated types for Inducks database\n';
+
+        for (const tableData of tablesJSON) {
+            let tableTSString = `export interface ${capitalize(tableData.tableName)} {\n`
+
+            for (const {name, type} of tableData.columns) {
+                let TSType = 'string';
+
+                if (type === 'int') {
+                    TSType = 'number';
+                } else if (type === 'bool') {
+                    TSType = 'boolean';
+                }
+
+                tableTSString += `  ${name}: ${TSType};\n`;
+            }
+
+            for (const foreignKey of tableData.foreignKeys) {
+                tableTSString += `  ${foreignKey.column.replace('code', '')}: ${capitalize(foreignKey.referenceTable)};\n`;
+            }
+
+            tableTSString += '}'
+            typesString += tableTSString + '\n\n';
+        }
+
+        fs.writeFileSync('Inducks.d.ts', typesString);
     })
     .option('isvdir', {
         describe: 'The directory the ISV files are located',
