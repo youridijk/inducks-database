@@ -81,3 +81,7 @@ services:
       - "8206:7700"
     volumes:
       - "./meili_data:/meili_data"
+    environment:
+      MEILI_HTTP_PAYLOAD_SIZE_LIMIT: 250Mb
+      MEILI_MAX_INDEXING_MEMORY: 100Mb
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}

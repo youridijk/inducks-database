@@ -1,3 +1,4 @@
+set search_path = 'inducks';
 update issue
 set filledoldestdate = left(filledoldestdate, 8) || '28'
 where filledoldestdate like '%02-31';
@@ -20,18 +21,18 @@ alter table issue
     alter column filledoldestdate type date
         using filledoldestdate::date;
 
-select filledoldestdate, (left(filledoldestdate, 8) || '30')::date
-from issue
-where filledoldestdate similar to '\d{4}-(\d(4|6|9)|11)-31';
-
-
-select filledoldestdate, left(filledoldestdate, 8) || '01'
-from issue
-where filledoldestdate like '%-00';
-
-select filledoldestdate
-from issue
-where filledoldestdate like '%-19-%';
+-- select filledoldestdate, (left(filledoldestdate, 8) || '30')::date
+-- from issue
+-- where filledoldestdate similar to '\d{4}-(\d(4|6|9)|11)-31';
+--
+--
+-- select filledoldestdate, left(filledoldestdate, 8) || '01'
+-- from issue
+-- where filledoldestdate like '%-00';
+--
+-- select filledoldestdate
+-- from issue
+-- where filledoldestdate like '%-19-%';
 
 
 -- create or replace view test as
@@ -138,23 +139,6 @@ from entry e
 
 
 -- where issuecode = 'nl/PO3 245'
-
-
-
-select entrycode, issuecode, original_entry_urls
-from entry_with_images
-
-select *
-from issue_with_images
-where issuecode = 'nl/PO3 219'
-
-select oldestdate, filledoldestdate
-from issue
-where oldestdate like '%Q%';
-
-select count(issuecode)
-from issue
-
 
 create index issue_filledoldestdate on issue (filledoldestdate);
 create index issue_oldestdate on issue (oldestdate);

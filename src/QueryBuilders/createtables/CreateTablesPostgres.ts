@@ -73,7 +73,7 @@ export default class CreateTablesPostgres extends QueryBuilder {
     }
 
     public getRenameTempToNormalStatement(tableName: string): string {
-        return `ALTER TABLE ${this.getSchemaName()}.${tableName}_temp RENAME TO ${tableName};`;
+        return `ALTER TABLE IF EXISTS  ${this.getSchemaName()}.${tableName}_temp RENAME TO ${tableName};`;
     }
 
     public tableHasForeignKeys(tableData: TableData): boolean {

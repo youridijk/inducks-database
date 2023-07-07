@@ -28,13 +28,13 @@ export default class CreateTablesPostgREST extends CreateTablesPostgres {
     }
 
     public getGrantSelectOnTableStatement(tableData: TableData): string {
-        return `GRANT SELECT ON ${this.getSchemaName()}.${tableData.tableName}_temp TO ${this.getAnomRoleName()};`
+        return `GRANT SELECT ON ${this.getSchemaName()}.${tableData.tableName} TO ${this.getAnomRoleName()};`
     }
 
     public getCreateMD5Indexes(tableData: TableData[]): string {
         return tableData.map(table => {
             const joinedPrimaryKeys = table.primaryKeys.join(', ')
-            return `CREATE INDEX md5_${table.tableName} ON (${joinedPrimaryKeys});`;
+            return `CREATE INDEX md5_${table.tableName} ON ${table.tableName}(${joinedPrimaryKeys});`;
         }).join('\n')
     }
 
