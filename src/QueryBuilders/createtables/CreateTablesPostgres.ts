@@ -170,7 +170,8 @@ export default class CreateTablesPostgres extends QueryBuilder {
             '       WHERE s.storycode IS NULL);\n' +
             `ALTER TABLE ${this.getSchemaName()}.storyversion_temp` + '\n' +
             'ADD CONSTRAINT fk_storyversion_storycode_storycode FOREIGN KEY (storycode) ' +
-            `REFERENCES ${this.getSchemaName()}.story_temp (storycode) ON DELETE CASCADE;\n`;
+            `REFERENCES ${this.getSchemaName()}.story_temp (storycode) ON DELETE CASCADE;\n` +
+            `CREATE INDEX fk_index_storyversion_storycode ON ${this.getSchemaName()}.storyversion_temp(storycode)`;
     }
 
     public getFinalQuerySteps(tableJSON: TableData[]): Step[] {

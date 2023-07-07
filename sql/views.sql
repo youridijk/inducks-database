@@ -18,23 +18,24 @@ select eu.entrycode,
        eu.public,
        'https://inducks.org/hr.php?image=' || s.urlbase || eu.url as fullurl
 from entryurl eu
-         left join lateral (
-    select *
-    from site s
-    where s.sitecode = eu.sitecode
+         left join lateral (select s.urlbase
+                            from site s
+                            where s.sitecode = eu.sitecode
     ) as s on true
 where eu.sitecode not like 'thumbnails%';
+
+
+
 grant select on full_entryurl to web_anon;
 
 drop view if exists equiv_count;
 create or replace view equiv_count as
 select equiv_outer.issuecode, equiv_outer.equivid, equiv_count
 from equiv equiv_outer
-
-         left join lateral (
-    select count(*) as equiv_count
-    from equiv equiv_inner
-    where equiv_outer.equivid = equiv_inner.equivid
+         left join lateral (select count(*) as equiv_count
+                            from equiv equiv_inner
+                            where equiv_outer.equivid = equiv_inner.equivid
+                              and equiv_inner.issuecode != equiv_outer.issuecode
     ) as equiv_count on true;
 grant select on equiv_count to web_anon;
 
@@ -62,16 +63,16 @@ grant select on equiv_issues to web_anon;
 select *
 from equiv_count;
 
-create function get_issue_equivalents(issue_code character varying)
+create or replace function get_issue_equivalents(issue_code character varying)
     returns SETOF inducks.equiv
     language sql
 as
 $$
 select *
 from equiv
-where equivid = (select equivid
-                 from equiv
-                 where issuecode = issue_code)
+where equivid in (select equivid
+                  from equiv
+                  where issuecode = issue_code)
   and issuecode != issue_code
 $$;
 
@@ -85,9 +86,9 @@ where equivid = (select equivid
 
 -- drop view full_issue_url;
 -- create or replace view full_issue_url as
-drop view issue_with_images;
+drop view issue_with_images cascade;
 create or replace view issue_with_images as
-select i.*, json_agg(entries) as image_urls
+select i.*, jsonb_agg(entries) as image_urls
 from issue i
          left join lateral (select entry_urls.*
                             from entry e
@@ -102,29 +103,27 @@ from issue i
 group by i.issuecode;
 
 grant select on issue_with_images to web_anon;
+grant select on issue_with_images to postgres;
 
 
-drop view test;
-create view test as
-select issuecode
-from issue
+drop view issue_images;
+create or replace view issue_images as
+select e.issuecode, entry_urls.*
+from entry e
+         left join lateral (select *
+                            from full_entryurl eu
+                            where eu.entrycode = e.entrycode
+    ) as entry_urls on true
+  where e.position = 'a';
+grant select on issue_images to web_anon;
 
+insert into laravel.owned_issues (issue_code, user_id, created_at)
+select issuecode,1, timestamp '2023-01-10 20:00:00' +
+                    random() * (timestamp '2023-01-01 20:00:00' -
+                                timestamp '2023-09-30 10:00:00')
+from inducks.issue
+where publicationcode = 'nl/PO3'
+order by filledoldestdate desc
+on conflict (issue_code, user_id) do
+    update set created_at = now(), updated_at = now()
 
-select *
-from full_issue_url
-         left join issue i on full_issue_url.issuecode = i.issuecode;
-
-
-select *
-from issue
-where issuenumber like 'R%'
--- where publicationcode = 'nl/PO3'
--- and pages = '1'
-;
-
-select *
-from issue
-where issue.publicationcode like 'nl/PO3%';
-
-select distinct pages
-from issue

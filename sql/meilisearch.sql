@@ -53,9 +53,11 @@ SELECT MD5(i.issuecode)                                                  AS id,
        issue_publication.countrycode                                     AS countrycode,
        issue_publication.countryname                                     AS countryname,
        issue_publication.languagecode                                    AS languagecode,
+       issue_publication.category                                        AS category,
+       issue_publication.filter_categories                               AS filter_categories,
        image_urls.*
 FROM issue i
-         LEFT JOIN LATERAL ( SELECT json_agg(i) AS image_urls
+         LEFT JOIN LATERAL ( SELECT jsonb_agg(i) AS image_urls
                              FROM get_issue_image_urls(i.issuecode) i
     ) AS image_urls ON TRUE
 
@@ -63,7 +65,8 @@ FROM issue i
                                     p.countrycode,
                                     p.languagecode,
                                     p.title,
-                                    publication_country.countryname
+                                    publication_country.countryname,
+                                    publication_category.*
 
                              FROM publication AS p
 
@@ -72,51 +75,20 @@ FROM issue i
                                                           WHERE c.countrycode = p.countrycode
                                  ) AS publication_country ON TRUE
 
+                                      LEFT JOIN LATERAL ( SELECT category, coalesce(string_to_array(lower(category), ' '), '{}') AS filter_categories
+                                                          FROM publicationcategory pc
+                                                          where pc.publicationcode = p.publicationcode
+                                 ) as publication_category ON TRUE
+
                              WHERE p.publicationcode =
                                    i.publicationcode
 
 
-    ) AS issue_publication ON TRUE
-
-
---          LEFT JOIN LATERAL (SELECT entry_urls
---                             FROM entry e
---                                      LEFT JOIN LATERAL (SELECT 'https://inducks.org/hr.php?image=' || site.urlbASe ||
---                                                                eu.url || '?normalsize=1' AS fullurl
---                                                         FROM entryurl eu
---                                                                  LEFT JOIN LATERAL ( SELECT s.urlbASe
---                                                                                      FROM site s
---                                                                                      WHERE s.sitecode = eu.sitecode
---                                                             ) AS site ON TRUE
---                                                         WHERE eu.entrycode = e.entrycode
---                                                           AND eu.public = TRUE
---                                 ) AS entry_urls ON TRUE
---              where e.issuecode = i.issuecode
---              and e.position = 'a'
---     ) AS entries ON TRUE
-;
-
-
-
-SELECT issue.*, row_to_json(issue_publication_1.*) AS publication
-FROM issue
-         LEFT JOIN LATERAL ( SELECT publication_1.*
-                             FROM publication AS publication_1
-                             WHERE publication_1.publicationcode =
-                                   issue.publicationcode ) AS issue_publication_1 ON TRUE;
-
+    ) AS issue_publication ON TRUE;
 
 GRANT SELECT ON meilisearch_issue TO web_anon;
 
+CREATE INDEX meilisearch_filter_category ON publicationcategory(coalesce(string_to_array(lower(category), ' '), '{}'));
+drop index meilisearch_filter_category;
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA inducks GRANT SELECT ON TABLES TO web_anon;
-
-select count(*)
-from meilisearch_issue
-
-select count(*)
-from character
-
-select issuenumber, title
-from issue
-where publicationcode = 'nl/PREM'
